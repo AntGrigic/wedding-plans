@@ -1,216 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Wedding calls</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #F2ECEA;
-    --surface: #FBF8F7;
-    --ink: #2A2124;
-    --muted: #8B7B7E;
-    --line: #DED3D1;
-    --claret: #7A2E3E;
-    --sage: #4F6B57;
-    --sage-soft: #E4EBE4;
-
-    box-sizing: border-box;
-    padding-top: env(safe-area-inset-top, 0px);
-    padding-bottom: env(safe-area-inset-bottom, 0px);
-    color-scheme: light dark;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --paper: #191416;
-      --surface: #221B1E;
-      --ink: #F0E8E9;
-      --muted: #9C8B8F;
-      --line: #372C30;
-      --claret: #D98A9C;
-      --sage: #93B79B;
-      --sage-soft: #26332A;
-    }
-  }
-  :root[data-theme="dark"] {
-    --paper: #191416;
-    --surface: #221B1E;
-    --ink: #F0E8E9;
-    --muted: #9C8B8F;
-    --line: #372C30;
-    --claret: #D98A9C;
-    --sage: #93B79B;
-    --sage-soft: #26332A;
-  }
-  *, *::before, *::after { box-sizing: border-box; }
-  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
-  body {
-    margin: 0;
-    min-height: 100%;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: Karla, "Helvetica Neue", Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.45;
-  }
-  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 18px 72px; }
-
-  header h1 {
-    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
-    font-weight: 400;
-    font-size: clamp(38px, 12vw, 56px);
-    line-height: 0.95;
-    margin: 0 0 14px;
-    letter-spacing: -0.01em;
-  }
-  header h1 em { font-style: italic; }
-  .tally { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); }
-  .tally strong { color: var(--ink); font-weight: 600; }
-  .meter { height: 3px; background: var(--line); margin: 10px 0 24px; border-radius: 2px; overflow: hidden; }
-  .meter span { display: block; height: 100%; width: 0; background: var(--sage); transition: width .35s ease; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 16px;
-  }
-  .card h2 {
-    font-family: "Instrument Serif", Georgia, serif;
-    font-weight: 400;
-    font-size: 24px;
-    margin: 0 0 12px;
-  }
-  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
-  input[type="text"], input[type="search"] {
-    width: 100%;
-    font: inherit;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 9px;
-    padding: 11px 12px;
-  }
-  input:focus-visible, button:focus-visible {
-    outline: 2px solid var(--claret);
-    outline-offset: 2px;
-  }
-  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .field { margin-bottom: 12px; }
-
-  .stepper { display: flex; align-items: center; gap: 14px; }
-  .stepper button {
-    width: 40px; height: 40px;
-    font-size: 20px; line-height: 1;
-    background: var(--paper);
-    color: var(--ink);
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  .stepper output { font-size: 19px; min-width: 22px; text-align: center; font-variant-numeric: tabular-nums; }
-  .stepper .hint { font-size: 13px; color: var(--muted); }
-
-  #companions { display: grid; gap: 8px; margin: 12px 0 0; }
-  #companions:empty { margin: 0; }
-
-  .primary {
-    width: 100%;
-    margin-top: 14px;
-    font: inherit;
-    font-weight: 600;
-    padding: 13px;
-    border: 0;
-    border-radius: 9px;
-    background: var(--claret);
-    color: var(--surface);
-    cursor: pointer;
-  }
-  .ghost {
-    font: inherit; font-size: 14px;
-    background: none; border: 0; color: var(--muted);
-    cursor: pointer; padding: 8px 4px; text-decoration: underline;
-  }
-
-  .controls { display: flex; gap: 8px; margin: 26px 0 12px; }
-  .chips { display: flex; gap: 6px; }
-  .chip {
-    font: inherit; font-size: 14px;
-    padding: 8px 13px;
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--muted);
-    border-radius: 999px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-
-  ul.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-  li.guest {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  li.guest.done { background: transparent; }
-  .row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
-  .tick {
-    flex: 0 0 auto;
-    width: 30px; height: 30px;
-    border-radius: 50%;
-    border: 1.5px solid var(--line);
-    background: transparent;
-    color: transparent;
-    font-size: 15px; line-height: 1;
-    cursor: pointer;
-    display: grid; place-items: center;
-    transition: background .18s ease, border-color .18s ease;
-  }
-  .done .tick { background: var(--sage); border-color: var(--sage); color: var(--surface); }
-  .who { flex: 1 1 auto; min-width: 0; cursor: pointer; text-align: left; background: none; border: 0; font: inherit; color: inherit; padding: 0; }
-  .who .name { display: block; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
-  .done .who .name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
-  .who .sub { display: block; font-size: 13px; color: var(--muted); }
-  .badge {
-    flex: 0 0 auto;
-    font-size: 13px; font-variant-numeric: tabular-nums;
-    color: var(--claret);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 2px 9px;
-  }
-  .detail { padding: 0 14px 14px 56px; font-size: 14px; color: var(--muted); }
-  .detail ol { margin: 0 0 10px; padding-left: 18px; }
-  .detail li { margin-bottom: 2px; }
-  .detail .acts { display: flex; gap: 14px; }
-  .detail .acts button { font: inherit; font-size: 14px; background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; }
-  .detail .edit { color: var(--ink); }
-  .detail .del { color: var(--claret); }
-
-  .empty {
-    border: 1px dashed var(--line);
-    border-radius: 12px;
-    padding: 28px 18px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 15px;
-  }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-</style>
-</head>
 <body>
 <div class="wrap">
   <header>
     <h1>Wedding<br><em>calls</em></h1>
     <div class="tally">
-      <span><strong id="t-called">0</strong> of <strong id="t-total">0</strong> called</span>
-      <span><strong id="t-heads">0</strong> people coming</span>
+      <span><strong id="t-called">61</strong> of <strong id="t-total">83</strong> called</span>
+      <span><strong id="t-heads">147</strong> people coming</span>
     </div>
-    <div class="meter"><span id="bar"></span></div>
+    <div class="meter"><span id="bar" style="width: 73.494%;"></span></div>
   </header>
 
   <form class="card" id="form" autocomplete="off">
@@ -218,7 +14,7 @@
     <div class="two">
       <div class="field">
         <label for="first">First name</label>
-        <input type="text" id="first" required>
+        <input type="text" id="first" required="">
       </div>
       <div class="field">
         <label for="last">Last name</label>
@@ -234,20 +30,20 @@
     </div>
     <div id="companions"></div>
     <button class="primary" type="submit" id="submit">Add to the list</button>
-    <button class="ghost" type="button" id="cancel" hidden>Cancel edit</button>
+    <button class="ghost" type="button" id="cancel" hidden="">Cancel edit</button>
   </form>
 
   <div class="controls">
     <div class="chips">
-      <button class="chip" data-filter="todo" aria-pressed="true">To call</button>
-      <button class="chip" data-filter="all" aria-pressed="false">Everyone</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">To call</button>
+      <button class="chip" data-filter="all" aria-pressed="true">Everyone</button>
       <button class="chip" data-filter="done" aria-pressed="false">Called</button>
     </div>
   </div>
   <div class="field"><input type="search" id="search" placeholder="Search names"></div>
 
-  <ul class="list" id="list"></ul>
-  <div class="empty" id="empty" hidden></div>
+  <ul class="list" id="list"><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Cosic as not called">✓</button><button class="who" type="button"><span class="name">Luka Cosic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Garic as not called">✓</button><button class="who" type="button"><span class="name">Luka Garic</span><span class="sub">with Lucija</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Filip Jovanovic as not called">✓</button><button class="who" type="button"><span class="name">Filip Jovanovic</span><span class="sub">with Mateja</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Juraj Cvetko as not called">✓</button><button class="who" type="button"><span class="name">Juraj Cvetko</span><span class="sub">with Anamaria</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Stjepan Majhen as called">✓</button><button class="who" type="button"><span class="name">Stjepan Majhen</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Dinko Simenc as not called">✓</button><button class="who" type="button"><span class="name">Dinko Simenc</span><span class="sub">with Tina</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Antonio Salov as not called">✓</button><button class="who" type="button"><span class="name">Antonio Salov</span><span class="sub">with Nada, Rebeka</span></button><span class="badge">+2</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Dino Harambasic as not called">✓</button><button class="who" type="button"><span class="name">Dino Harambasic</span><span class="sub">with Helena, Iskra</span></button><span class="badge">+2</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Milos Gavrilovic as not called">✓</button><button class="who" type="button"><span class="name">Milos Gavrilovic</span><span class="sub">with Dusica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Darko Steficar as not called">✓</button><button class="who" type="button"><span class="name">Darko Steficar</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Adrin Liber as not called">✓</button><button class="who" type="button"><span class="name">Adrin Liber</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Mario Hudolin as called">✓</button><button class="who" type="button"><span class="name">Mario Hudolin</span><span class="sub">with Monika</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Tomislav Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Tomislav Zivkovic</span><span class="sub">with Katarina</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Sara Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Sara Zivkovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Lara Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Lara Zivkovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Melita Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Melita Zivkovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Kuma Kata as not called">✓</button><button class="who" type="button"><span class="name">Kuma Kata</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivan Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Ivan Zivkovic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Lovro Lesic as called">✓</button><button class="who" type="button"><span class="name">Lovro Lesic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Josip Lesic as called">✓</button><button class="who" type="button"><span class="name">Josip Lesic</span><span class="sub">with Lana</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Golubicic as not called">✓</button><button class="who" type="button"><span class="name">Luka Golubicic</span><span class="sub">with Patricija, Lora</span></button><span class="badge">+2</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Laura Babogredac as not called">✓</button><button class="who" type="button"><span class="name">Laura Babogredac</span><span class="sub">with Robert</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Duka Golubicic as not called">✓</button><button class="who" type="button"><span class="name">Duka Golubicic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mato Golubicic as not called">✓</button><button class="who" type="button"><span class="name">Mato Golubicic</span><span class="sub">with Bilja</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Marijana Dominkovic as not called">✓</button><button class="who" type="button"><span class="name">Marijana Dominkovic</span><span class="sub">with Zelja</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Marko Lesic as called">✓</button><button class="who" type="button"><span class="name">Marko Lesic</span><span class="sub">with Eva</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Kata Bikic as not called">✓</button><button class="who" type="button"><span class="name">Kata Bikic</span><span class="sub">with Bikic</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Roberta Pejic as not called">✓</button><button class="who" type="button"><span class="name">Roberta Pejic</span><span class="sub">with Tunjo, Dijete 1, Dijete 2</span></button><span class="badge">+3</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Kruno Perikic as called">✓</button><button class="who" type="button"><span class="name">Kruno Perikic</span><span class="sub">with Adriana</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Ivica Aleksic</span><span class="sub">with Anica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Jemric as not called">✓</button><button class="who" type="button"><span class="name">Ivica Jemric</span><span class="sub">with Anica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Anamarija Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Anamarija Aleksic</span><span class="sub">with Njezin decko</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Marko Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Marko Aleksic</span><span class="sub">with Cura</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Stjepan Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Stjepan Aleksic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Ivan (Boki) Borilovic as called">✓</button><button class="who" type="button"><span class="name">Ivan (Boki) Borilovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Dario Baotic as not called">✓</button><button class="who" type="button"><span class="name">Dario Baotic</span><span class="sub">with Marinela</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Anica Dzoic as not called">✓</button><button class="who" type="button"><span class="name">Anica Dzoic</span><span class="sub">with Marijan</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Jela Grabner as not called">✓</button><button class="who" type="button"><span class="name">Jela Grabner</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mara Knezevic as not called">✓</button><button class="who" type="button"><span class="name">Mara Knezevic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Bozica as not called">✓</button><button class="who" type="button"><span class="name">Bozica</span><span class="sub">with Josip (Jole)</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Vera Vagner as not called">✓</button><button class="who" type="button"><span class="name">Vera Vagner</span><span class="sub">with Momak</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Branimir Wolf as not called">✓</button><button class="who" type="button"><span class="name">Branimir Wolf</span><span class="sub">with Ana</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Duro (Doko) Bilic as called">✓</button><button class="who" type="button"><span class="name">Duro (Doko) Bilic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ilija Sokic as not called">✓</button><button class="who" type="button"><span class="name">Ilija Sokic</span><span class="sub">with Jelena</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Zeljko Pavlovic as called">✓</button><button class="who" type="button"><span class="name">Zeljko Pavlovic</span><span class="sub">with Bilja</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Tino Tomasevic as called">✓</button><button class="who" type="button"><span class="name">Tino Tomasevic</span><span class="sub">with Ana</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Taso Ostojic as called">✓</button><button class="who" type="button"><span class="name">Taso Ostojic</span><span class="sub">with Mira</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Danijela Macner as not called">✓</button><button class="who" type="button"><span class="name">Danijela Macner</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Gordana Ivkovic-Maric as not called">✓</button><button class="who" type="button"><span class="name">Gordana Ivkovic-Maric</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Julijana Klacar as not called">✓</button><button class="who" type="button"><span class="name">Julijana Klacar</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ruda Mikulic as not called">✓</button><button class="who" type="button"><span class="name">Ruda Mikulic</span><span class="sub">with Nada</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Ivica Vinkovic</span><span class="sub">with Dragana</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Luka Vinkovic</span><span class="sub">with Nadja, Beba</span></button><span class="badge">+2</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Lucija Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Lucija Vinkovic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Zdravko Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Zdravko Vinkovic</span><span class="sub">with Jadranka</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Marija Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Marija Vinkovic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Adam Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Adam Vinkovic</span><span class="sub">with Korina, Vita, Rafael, Vincent, Rebeka</span></button><span class="badge">+5</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Martina Flajnek as called">✓</button><button class="who" type="button"><span class="name">Martina Flajnek</span><span class="sub">with Franjo, Dijete 1, Dijete 2</span></button><span class="badge">+3</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mirna Mikec as not called">✓</button><button class="who" type="button"><span class="name">Mirna Mikec</span><span class="sub">with Ico</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Tomislav Mikec as called">✓</button><button class="who" type="button"><span class="name">Tomislav Mikec</span><span class="sub">with Maja, Jakov, Lukas</span></button><span class="badge">+3</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivan Mikec as not called">✓</button><button class="who" type="button"><span class="name">Ivan Mikec</span><span class="sub">with Marina, Eugen, Erika</span></button><span class="badge">+3</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Zeljko Matic as called">✓</button><button class="who" type="button"><span class="name">Zeljko Matic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Nevenka Nedic as called">✓</button><button class="who" type="button"><span class="name">Nevenka Nedic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Grigic as not called">✓</button><button class="who" type="button"><span class="name">Ivica Grigic</span><span class="sub">with Violeta</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mateo Grigic as not called">✓</button><button class="who" type="button"><span class="name">Mateo Grigic</span><span class="sub">with Lea</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Josip Grigic as not called">✓</button><button class="who" type="button"><span class="name">Josip Grigic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Kata Knezevic as not called">✓</button><button class="who" type="button"><span class="name">Kata Knezevic</span><span class="sub">with Mato</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Zorica Spoljaric as not called">✓</button><button class="who" type="button"><span class="name">Zorica Spoljaric</span><span class="sub">with Igor</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Irena Stimac as called">✓</button><button class="who" type="button"><span class="name">Irena Stimac</span><span class="sub">with Dzeno</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Emily Spoljaric as not called">✓</button><button class="who" type="button"><span class="name">Emily Spoljaric</span><span class="sub">with Decko</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Patrik Spoljaric as not called">✓</button><button class="who" type="button"><span class="name">Patrik Spoljaric</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Nikola Komes as not called">✓</button><button class="who" type="button"><span class="name">Nikola Komes</span><span class="sub">with Zena</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Karlo Komes as not called">✓</button><button class="who" type="button"><span class="name">Karlo Komes</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Jurica Wilam as not called">✓</button><button class="who" type="button"><span class="name">Jurica Wilam</span><span class="sub">with Zarucnica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Adam Marjanovic as not called">✓</button><button class="who" type="button"><span class="name">Adam Marjanovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Dragicevic as not called">✓</button><button class="who" type="button"><span class="name">Luka Dragicevic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Hana as not called">✓</button><button class="who" type="button"><span class="name">Hana</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Petar Babic as not called">✓</button><button class="who" type="button"><span class="name">Petar Babic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Danko Putar as not called">✓</button><button class="who" type="button"><span class="name">Danko Putar</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Filip Vuckovic as not called">✓</button><button class="who" type="button"><span class="name">Filip Vuckovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Tomislav Hosni as not called">✓</button><button class="who" type="button"><span class="name">Tomislav Hosni</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ana as not called">✓</button><button class="who" type="button"><span class="name">Ana</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Goran Hacek as not called">✓</button><button class="who" type="button"><span class="name">Goran Hacek</span></button></div></li></ul>
+  <div class="empty" id="empty" hidden="">Everyone has been called.</div>
 </div>
 
 <script>
@@ -462,5 +258,6 @@
   render();
 })();
 </script>
+
+
 </body>
-</html>
