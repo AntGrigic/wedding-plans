@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wedding calls</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2ECEA;
+    --surface: #FBF8F7;
+    --ink: #2A2124;
+    --muted: #8B7B7E;
+    --line: #DED3D1;
+    --claret: #7A2E3E;
+    --sage: #4F6B57;
+    --sage-soft: #E4EBE4;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #191416;
+      --surface: #221B1E;
+      --ink: #F0E8E9;
+      --muted: #9C8B8F;
+      --line: #372C30;
+      --claret: #D98A9C;
+      --sage: #93B79B;
+      --sage-soft: #26332A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #191416;
+    --surface: #221B1E;
+    --ink: #F0E8E9;
+    --muted: #9C8B8F;
+    --line: #372C30;
+    --claret: #D98A9C;
+    --sage: #93B79B;
+    --sage-soft: #26332A;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Karla, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 22px 18px 72px; }
+
+  header h1 {
+    font-family: "Instrument Serif", Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    font-size: clamp(38px, 12vw, 56px);
+    line-height: 0.95;
+    margin: 0 0 14px;
+    letter-spacing: -0.01em;
+  }
+  header h1 em { font-style: italic; }
+  .tally { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); }
+  .tally strong { color: var(--ink); font-weight: 600; }
+  .meter { height: 3px; background: var(--line); margin: 10px 0 24px; border-radius: 2px; overflow: hidden; }
+  .meter span { display: block; height: 100%; width: 0; background: var(--sage); transition: width .35s ease; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .card h2 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-weight: 400;
+    font-size: 24px;
+    margin: 0 0 12px;
+  }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+  input[type="text"], input[type="search"] {
+    width: 100%;
+    font: inherit;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 11px 12px;
+  }
+  input:focus-visible, button:focus-visible {
+    outline: 2px solid var(--claret);
+    outline-offset: 2px;
+  }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { margin-bottom: 12px; }
+
+  .stepper { display: flex; align-items: center; gap: 14px; }
+  .stepper button {
+    width: 40px; height: 40px;
+    font-size: 20px; line-height: 1;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .stepper output { font-size: 19px; min-width: 22px; text-align: center; font-variant-numeric: tabular-nums; }
+  .stepper .hint { font-size: 13px; color: var(--muted); }
+
+  #companions { display: grid; gap: 8px; margin: 12px 0 0; }
+  #companions:empty { margin: 0; }
+
+  .primary {
+    width: 100%;
+    margin-top: 14px;
+    font: inherit;
+    font-weight: 600;
+    padding: 13px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--claret);
+    color: var(--surface);
+    cursor: pointer;
+  }
+  .ghost {
+    font: inherit; font-size: 14px;
+    background: none; border: 0; color: var(--muted);
+    cursor: pointer; padding: 8px 4px; text-decoration: underline;
+  }
+
+  .controls { display: flex; gap: 8px; margin: 26px 0 12px; }
+  .chips { display: flex; gap: 6px; }
+  .chip {
+    font: inherit; font-size: 14px;
+    padding: 8px 13px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  ul.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  li.guest {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  li.guest.done { background: transparent; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+  .tick {
+    flex: 0 0 auto;
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    color: transparent;
+    font-size: 15px; line-height: 1;
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: background .18s ease, border-color .18s ease;
+  }
+  .done .tick { background: var(--sage); border-color: var(--sage); color: var(--surface); }
+  .who { flex: 1 1 auto; min-width: 0; cursor: pointer; text-align: left; background: none; border: 0; font: inherit; color: inherit; padding: 0; }
+  .who .name { display: block; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+  .done .who .name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+  .who .sub { display: block; font-size: 13px; color: var(--muted); }
+  .badge {
+    flex: 0 0 auto;
+    font-size: 13px; font-variant-numeric: tabular-nums;
+    color: var(--claret);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 2px 9px;
+  }
+  .detail { padding: 0 14px 14px 56px; font-size: 14px; color: var(--muted); }
+  .detail ol { margin: 0 0 10px; padding-left: 18px; }
+  .detail li { margin-bottom: 2px; }
+  .detail .acts { display: flex; gap: 14px; }
+  .detail .acts button { font: inherit; font-size: 14px; background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; }
+  .detail .edit { color: var(--ink); }
+  .detail .del { color: var(--claret); }
+
+  .empty {
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 28px 18px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Wedding<br><em>calls</em></h1>
+    <div class="tally">
+      <span><strong id="t-called">0</strong> of <strong id="t-total">0</strong> called</span>
+      <span><strong id="t-heads">0</strong> people coming</span>
+    </div>
+    <div class="meter"><span id="bar"></span></div>
+  </header>
+
+  <form class="card" id="form" autocomplete="off">
+    <h2 id="form-title">Add a guest</h2>
+    <div class="two">
+      <div class="field">
+        <label for="first">First name</label>
+        <input type="text" id="first" required>
+      </div>
+      <div class="field">
+        <label for="last">Last name</label>
+        <input type="text" id="last">
+      </div>
+    </div>
+    <label for="minus">Bringing others</label>
+    <div class="stepper">
+      <button type="button" id="minus" aria-label="One fewer">–</button>
+      <output id="count" aria-live="polite">0</output>
+      <button type="button" id="plus" aria-label="One more">+</button>
+      <span class="hint">Names are optional</span>
+    </div>
+    <div id="companions"></div>
+    <button class="primary" type="submit" id="submit">Add to the list</button>
+    <button class="ghost" type="button" id="cancel" hidden>Cancel edit</button>
+  </form>
+
+  <div class="controls">
+    <div class="chips">
+      <button class="chip" data-filter="todo" aria-pressed="true">To call</button>
+      <button class="chip" data-filter="all" aria-pressed="false">Everyone</button>
+      <button class="chip" data-filter="done" aria-pressed="false">Called</button>
+    </div>
+  </div>
+  <div class="field"><input type="search" id="search" placeholder="Search names"></div>
+
+  <ul class="list" id="list"></ul>
+  <div class="empty" id="empty" hidden></div>
+</div>
+
+<script>
+(function () {
+  var KEY = 'wedding-calls-v1';
+  var guests = [];
+  var filter = 'todo';
+  var query = '';
+  var editingId = null;
+  var open = {};
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) { var parsed = JSON.parse(raw); if (Array.isArray(parsed)) guests = parsed; }
+    } catch (e) { guests = []; }
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(guests)); } catch (e) {}
+  }
+
+  // ---- form -----------------------------------------------------------
+  var count = 0;
+  function renderCompanions(values) {
+    var box = $('companions');
+    var existing = [].map.call(box.querySelectorAll('input'), function (i) { return i.value; });
+    var vals = values || existing;
+    box.innerHTML = '';
+    for (var i = 0; i < count; i++) {
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Guest ' + (i + 1) + ' name';
+      input.value = vals[i] || '';
+      box.appendChild(input);
+    }
+    $('count').textContent = count;
+  }
+  $('plus').addEventListener('click', function () { if (count < 12) { count++; renderCompanions(); } });
+  $('minus').addEventListener('click', function () { if (count > 0) { count--; renderCompanions(); } });
+
+  function resetForm() {
+    editingId = null;
+    count = 0;
+    $('first').value = '';
+    $('last').value = '';
+    renderCompanions([]);
+    $('form-title').textContent = 'Add a guest';
+    $('submit').textContent = 'Add to the list';
+    $('cancel').hidden = true;
+  }
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var first = $('first').value.trim();
+    if (!first) return;
+    var names = [].map.call($('companions').querySelectorAll('input'), function (i) { return i.value.trim(); });
+    if (editingId) {
+      var g = guests.filter(function (x) { return x.id === editingId; })[0];
+      if (g) { g.first = first; g.last = $('last').value.trim(); g.extra = count; g.names = names; }
+    } else {
+      guests.push({
+        id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
+        first: first, last: $('last').value.trim(),
+        extra: count, names: names, called: false
+      });
+    }
+    save(); resetForm(); render();
+  });
+
+  $('cancel').addEventListener('click', function () { resetForm(); });
+
+  function startEdit(g) {
+    editingId = g.id;
+    $('first').value = g.first;
+    $('last').value = g.last || '';
+    count = g.extra || 0;
+    renderCompanions(g.names || []);
+    $('form-title').textContent = 'Edit guest';
+    $('submit').textContent = 'Save changes';
+    $('cancel').hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    $('first').focus();
+  }
+
+  // ---- filters --------------------------------------------------------
+  [].forEach.call(document.querySelectorAll('.chip'), function (c) {
+    c.addEventListener('click', function () {
+      filter = c.dataset.filter;
+      [].forEach.call(document.querySelectorAll('.chip'), function (o) {
+        o.setAttribute('aria-pressed', String(o === c));
+      });
+      render();
+    });
+  });
+  $('search').addEventListener('input', function () { query = this.value.toLowerCase().trim(); render(); });
+
+  // ---- list -----------------------------------------------------------
+  function fullName(g) { return (g.first + ' ' + (g.last || '')).trim(); }
+
+  function render() {
+    var total = guests.length;
+    var called = guests.filter(function (g) { return g.called; }).length;
+    var heads = guests.reduce(function (n, g) { return n + 1 + (g.extra || 0); }, 0);
+    $('t-called').textContent = called;
+    $('t-total').textContent = total;
+    $('t-heads').textContent = heads;
+    $('bar').style.width = total ? (called / total * 100) + '%' : '0';
+
+    var shown = guests.filter(function (g) {
+      if (filter === 'todo' && g.called) return false;
+      if (filter === 'done' && !g.called) return false;
+      if (query) {
+        var hay = (fullName(g) + ' ' + (g.names || []).join(' ')).toLowerCase();
+        if (hay.indexOf(query) === -1) return false;
+      }
+      return true;
+    });
+
+    var list = $('list');
+    list.innerHTML = '';
+    shown.forEach(function (g) {
+      var li = document.createElement('li');
+      li.className = 'guest' + (g.called ? ' done' : '');
+
+      var row = document.createElement('div');
+      row.className = 'row';
+
+      var tick = document.createElement('button');
+      tick.className = 'tick';
+      tick.type = 'button';
+      tick.textContent = '✓';
+      tick.setAttribute('aria-label', g.called ? 'Mark ' + fullName(g) + ' as not called' : 'Mark ' + fullName(g) + ' as called');
+      tick.addEventListener('click', function () { g.called = !g.called; save(); render(); });
+
+      var who = document.createElement('button');
+      who.className = 'who';
+      who.type = 'button';
+      var listed = (g.names || []).filter(Boolean);
+      who.innerHTML = '<span class="name"></span>';
+      who.querySelector('.name').textContent = fullName(g);
+      if (listed.length) {
+        var sub = document.createElement('span');
+        sub.className = 'sub';
+        sub.textContent = 'with ' + listed.join(', ');
+        who.appendChild(sub);
+      }
+      who.addEventListener('click', function () { open[g.id] = !open[g.id]; render(); });
+
+      row.appendChild(tick);
+      row.appendChild(who);
+      if (g.extra) {
+        var badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = '+' + g.extra;
+        row.appendChild(badge);
+      }
+      li.appendChild(row);
+
+      if (open[g.id]) {
+        var d = document.createElement('div');
+        d.className = 'detail';
+        if (g.extra) {
+          var ol = document.createElement('ol');
+          for (var i = 0; i < g.extra; i++) {
+            var item = document.createElement('li');
+            item.textContent = (g.names && g.names[i]) ? g.names[i] : 'name not given';
+            ol.appendChild(item);
+          }
+          d.appendChild(ol);
+        } else {
+          var p = document.createElement('p');
+          p.style.margin = '0 0 10px';
+          p.textContent = 'Coming alone.';
+          d.appendChild(p);
+        }
+        var acts = document.createElement('div');
+        acts.className = 'acts';
+        var ed = document.createElement('button');
+        ed.className = 'edit'; ed.type = 'button'; ed.textContent = 'Edit';
+        ed.addEventListener('click', function () { startEdit(g); });
+        var del = document.createElement('button');
+        del.className = 'del'; del.type = 'button'; del.textContent = 'Remove';
+        del.addEventListener('click', function () {
+          if (!confirm('Remove ' + fullName(g) + ' from the list?')) return;
+          guests = guests.filter(function (x) { return x.id !== g.id; });
+          if (editingId === g.id) resetForm();
+          save(); render();
+        });
+        acts.appendChild(ed); acts.appendChild(del);
+        d.appendChild(acts);
+        li.appendChild(d);
+      }
+
+      list.appendChild(li);
+    });
+
+    var empty = $('empty');
+    if (shown.length) { empty.hidden = true; }
+    else {
+      empty.hidden = false;
+      if (!total) empty.textContent = 'No one on the list yet. Add your first guest above.';
+      else if (query) empty.textContent = 'No names match "' + $('search').value.trim() + '".';
+      else if (filter === 'todo') empty.textContent = 'Everyone has been called.';
+      else empty.textContent = 'No calls made yet.';
+    }
+  }
+
+  load();
+  renderCompanions([]);
+  render();
+})();
+</script>
+</body>
+</html>
