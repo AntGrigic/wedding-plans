@@ -1,263 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wedding plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2ECEA; --surface: #FBF8F7; --ink: #2A2124; --muted: #8B7B7E;
+    --line: #DED3D1; --claret: #7A2E3E; --sage: #4F6B57; --gold: #9A7B3F;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #191416; --surface: #221B1E; --ink: #F0E8E9; --muted: #9C8B8F;
+      --line: #372C30; --claret: #D98A9C; --sage: #93B79B; --gold: #CBA95F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #191416; --surface: #221B1E; --ink: #F0E8E9; --muted: #9C8B8F;
+    --line: #372C30; --claret: #D98A9C; --sage: #93B79B; --gold: #CBA95F;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+  body { margin: 0; min-height: 100%; background: var(--paper); color: var(--ink);
+    font-family: Karla, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.45; }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 18px 16px 90px; }
+
+  h1 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400;
+    font-size: clamp(32px, 10vw, 46px); line-height: 0.95; margin: 0 0 10px; letter-spacing: -0.01em; }
+  h1 em { font-style: italic; }
+  .userline { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+  .userline .ghost { padding: 0; font-size: 12.5px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13.5px; color: var(--muted); }
+  .stats strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .meter { height: 3px; background: var(--line); margin: 10px 0 18px; border-radius: 2px; overflow: hidden; }
+  .meter span { display: block; height: 100%; width: 0; background: var(--sage); transition: width .3s ease; }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 16px; }
+  .tabs button { flex: 1; font: inherit; font-size: 15px; padding: 10px 6px;
+    border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 10px; cursor: pointer; }
+  .tabs button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 15px; }
+  .card h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 23px; margin: 0 0 12px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 5px; }
+  input[type="text"], input[type="search"] { width: 100%; font: inherit; color: var(--ink); background: var(--paper);
+    border: 1px solid var(--line); border-radius: 9px; padding: 11px 12px; }
+  input:focus-visible, button:focus-visible { outline: 2px solid var(--claret); outline-offset: 2px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field { margin-bottom: 12px; }
+  .stepper { display: flex; align-items: center; gap: 14px; }
+  .stepper button { width: 40px; height: 40px; font-size: 20px; line-height: 1; background: var(--paper);
+    color: var(--ink); border: 1px solid var(--line); border-radius: 50%; cursor: pointer; }
+  .stepper output { font-size: 19px; min-width: 22px; text-align: center; font-variant-numeric: tabular-nums; }
+  .stepper .hint { font-size: 13px; color: var(--muted); }
+  #companions { display: grid; gap: 8px; margin-top: 12px; }
+  #companions:empty { margin: 0; }
+  .primary { width: 100%; margin-top: 14px; font: inherit; font-weight: 600; padding: 13px; border: 0;
+    border-radius: 9px; background: var(--claret); color: var(--surface); cursor: pointer; }
+  .ghost { font: inherit; font-size: 14px; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 8px 4px; text-decoration: underline; }
+
+  .chips { display: flex; gap: 6px; margin: 22px 0 10px; flex-wrap: wrap; }
+  .chip { font: inherit; font-size: 14px; padding: 8px 13px; border: 1px solid var(--line); background: transparent;
+    color: var(--muted); border-radius: 999px; cursor: pointer; white-space: nowrap; }
+  .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  ul.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  li.guest { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  li.guest.done { background: transparent; }
+  .row { display: flex; align-items: center; gap: 11px; padding: 11px 13px; }
+  .tick { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line);
+    background: transparent; color: transparent; font-size: 15px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
+  .done .tick { background: var(--sage); border-color: var(--sage); color: var(--surface); }
+  .who { flex: 1 1 auto; min-width: 0; cursor: pointer; text-align: left; background: none; border: 0; font: inherit; color: inherit; padding: 0; }
+  .who .name { display: block; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+  .done .who .name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
+  .who .sub { display: block; font-size: 13px; color: var(--muted); }
+  .badge { flex: 0 0 auto; font-size: 13px; color: var(--claret); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }
+  .seatpill { flex: 0 0 auto; font-size: 12px; color: var(--gold); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+  .detail { padding: 0 13px 13px 54px; font-size: 14px; color: var(--muted); }
+  .person { display: flex; align-items: center; gap: 6px; padding: 5px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .person:first-child { border-top: 0; }
+  .person .pn { flex: 1 1 auto; color: var(--ink); font-size: 14.5px; overflow-wrap: anywhere; }
+  .age { font: inherit; font-size: 12px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line);
+    background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; }
+  .age[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--surface); }
+  .acts { display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
+  .acts button { font: inherit; font-size: 14px; background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; }
+  .acts .edit { color: var(--ink); }
+  .acts .del { color: var(--claret); }
+  .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 26px 16px; text-align: center; color: var(--muted); font-size: 15px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .btn { font: inherit; font-size: 14px; padding: 10px 14px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); cursor: pointer; }
+  .btn.accent { background: var(--claret); border-color: var(--claret); color: var(--surface); font-weight: 600; }
+  .table { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
+  .thead { display: flex; align-items: baseline; gap: 10px; padding: 12px 14px 8px; }
+  .thead .tname { font-family: "Instrument Serif", Georgia, serif; font-size: 22px; flex: 1 1 auto; cursor: pointer; }
+  .thead .tmeta { font-size: 13px; color: var(--muted); }
+  .thead .x { font: inherit; font-size: 13px; background: none; border: 0; color: var(--claret); cursor: pointer; text-decoration: underline; }
+  .seats { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
+  @media (min-width: 520px) { .seats { grid-template-columns: 1fr 1fr; } }
+  .seat { display: flex; align-items: center; gap: 9px; width: 100%; font: inherit; text-align: left; padding: 9px 13px;
+    cursor: pointer; background: var(--surface); color: var(--ink); border: 0; }
+  .seat .no { flex: 0 0 auto; width: 22px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .seat .pname { flex: 1 1 auto; font-size: 15px; overflow-wrap: anywhere; }
+  .seat.free .pname { color: var(--muted); font-style: italic; }
+  .tag { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--gold); color: var(--gold); white-space: nowrap; }
+
+  .scrim { position: fixed; inset: 0; background: rgba(20,12,14,.55); display: grid; place-items: end center; padding: 12px; z-index: 20; }
+  .sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; width: 100%; max-width: 560px;
+    max-height: 80vh; overflow: auto; padding: 16px; padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+  .sheet h3 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 22px; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; font: inherit; font-size: 15px; padding: 11px 12px; margin-bottom: 6px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--paper); color: var(--ink); cursor: pointer; }
+  .opt small { display: block; color: var(--muted); font-size: 12.5px; }
+
+  #print { display: none; }
+  @media print {
+    .wrap, .scrim { display: none !important; }
+    #print { display: block; font-family: Karla, Arial, sans-serif; color: #000; background: #fff; }
+    @page { margin: 12mm; }
+    #print h2 { font-size: 15pt; margin: 0 0 8pt; border-bottom: 1pt solid #000; padding-bottom: 3pt; }
+    #print h3 { font-size: 11pt; margin: 0 0 3pt; }
+    .ptable { break-inside: avoid; page-break-inside: avoid; display: inline-block; vertical-align: top; width: 48%; margin: 0 1% 10pt 0; font-size: 9.5pt; }
+    .ptable ol { margin: 0; padding-left: 16pt; }
+    .ptable li { margin-bottom: 1pt; }
+    table.chk { width: 100%; border-collapse: collapse; font-size: 9pt; }
+    table.chk th, table.chk td { border: 0.5pt solid #999; padding: 2.5pt 4pt; text-align: left; }
+    table.chk th { background: #eee; }
+    .brk { page-break-before: always; }
+    .box { display: inline-block; width: 9pt; height: 9pt; border: 0.7pt solid #000; }
+  }
+</style>
+</head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Wedding<br><em>calls</em></h1>
-    <div class="tally">
-      <span><strong id="t-called">61</strong> of <strong id="t-total">83</strong> called</span>
-      <span><strong id="t-heads">147</strong> people coming</span>
-    </div>
-    <div class="meter"><span id="bar" style="width: 73.494%;"></span></div>
-  </header>
-
-  <form class="card" id="form" autocomplete="off">
-    <h2 id="form-title">Add a guest</h2>
-    <div class="two">
-      <div class="field">
-        <label for="first">First name</label>
-        <input type="text" id="first" required="">
-      </div>
-      <div class="field">
-        <label for="last">Last name</label>
-        <input type="text" id="last">
-      </div>
-    </div>
-    <label for="minus">Bringing others</label>
-    <div class="stepper">
-      <button type="button" id="minus" aria-label="One fewer">–</button>
-      <output id="count" aria-live="polite">0</output>
-      <button type="button" id="plus" aria-label="One more">+</button>
-      <span class="hint">Names are optional</span>
-    </div>
-    <div id="companions"></div>
-    <button class="primary" type="submit" id="submit">Add to the list</button>
-    <button class="ghost" type="button" id="cancel" hidden="">Cancel edit</button>
-  </form>
-
-  <div class="controls">
-    <div class="chips">
-      <button class="chip" data-filter="todo" aria-pressed="false">To call</button>
-      <button class="chip" data-filter="all" aria-pressed="true">Everyone</button>
-      <button class="chip" data-filter="done" aria-pressed="false">Called</button>
-    </div>
+  <h1>Wedding<br><em>plan</em></h1>
+  <div class="userline">
+    <span id="who-email"></span>
+    <span id="sync">Loading…</span>
+    <button class="ghost" id="signout" hidden>Sign out</button>
   </div>
-  <div class="field"><input type="search" id="search" placeholder="Search names"></div>
 
-  <ul class="list" id="list"><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Cosic as not called">✓</button><button class="who" type="button"><span class="name">Luka Cosic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Garic as not called">✓</button><button class="who" type="button"><span class="name">Luka Garic</span><span class="sub">with Lucija</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Filip Jovanovic as not called">✓</button><button class="who" type="button"><span class="name">Filip Jovanovic</span><span class="sub">with Mateja</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Juraj Cvetko as not called">✓</button><button class="who" type="button"><span class="name">Juraj Cvetko</span><span class="sub">with Anamaria</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Stjepan Majhen as called">✓</button><button class="who" type="button"><span class="name">Stjepan Majhen</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Dinko Simenc as not called">✓</button><button class="who" type="button"><span class="name">Dinko Simenc</span><span class="sub">with Tina</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Antonio Salov as not called">✓</button><button class="who" type="button"><span class="name">Antonio Salov</span><span class="sub">with Nada, Rebeka</span></button><span class="badge">+2</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Dino Harambasic as not called">✓</button><button class="who" type="button"><span class="name">Dino Harambasic</span><span class="sub">with Helena, Iskra</span></button><span class="badge">+2</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Milos Gavrilovic as not called">✓</button><button class="who" type="button"><span class="name">Milos Gavrilovic</span><span class="sub">with Dusica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Darko Steficar as not called">✓</button><button class="who" type="button"><span class="name">Darko Steficar</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Adrin Liber as not called">✓</button><button class="who" type="button"><span class="name">Adrin Liber</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Mario Hudolin as called">✓</button><button class="who" type="button"><span class="name">Mario Hudolin</span><span class="sub">with Monika</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Tomislav Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Tomislav Zivkovic</span><span class="sub">with Katarina</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Sara Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Sara Zivkovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Lara Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Lara Zivkovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Melita Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Melita Zivkovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Kuma Kata as not called">✓</button><button class="who" type="button"><span class="name">Kuma Kata</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivan Zivkovic as not called">✓</button><button class="who" type="button"><span class="name">Ivan Zivkovic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Lovro Lesic as called">✓</button><button class="who" type="button"><span class="name">Lovro Lesic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Josip Lesic as called">✓</button><button class="who" type="button"><span class="name">Josip Lesic</span><span class="sub">with Lana</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Golubicic as not called">✓</button><button class="who" type="button"><span class="name">Luka Golubicic</span><span class="sub">with Patricija, Lora</span></button><span class="badge">+2</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Laura Babogredac as not called">✓</button><button class="who" type="button"><span class="name">Laura Babogredac</span><span class="sub">with Robert</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Duka Golubicic as not called">✓</button><button class="who" type="button"><span class="name">Duka Golubicic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mato Golubicic as not called">✓</button><button class="who" type="button"><span class="name">Mato Golubicic</span><span class="sub">with Bilja</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Marijana Dominkovic as not called">✓</button><button class="who" type="button"><span class="name">Marijana Dominkovic</span><span class="sub">with Zelja</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Marko Lesic as called">✓</button><button class="who" type="button"><span class="name">Marko Lesic</span><span class="sub">with Eva</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Kata Bikic as not called">✓</button><button class="who" type="button"><span class="name">Kata Bikic</span><span class="sub">with Bikic</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Roberta Pejic as not called">✓</button><button class="who" type="button"><span class="name">Roberta Pejic</span><span class="sub">with Tunjo, Dijete 1, Dijete 2</span></button><span class="badge">+3</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Kruno Perikic as called">✓</button><button class="who" type="button"><span class="name">Kruno Perikic</span><span class="sub">with Adriana</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Ivica Aleksic</span><span class="sub">with Anica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Jemric as not called">✓</button><button class="who" type="button"><span class="name">Ivica Jemric</span><span class="sub">with Anica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Anamarija Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Anamarija Aleksic</span><span class="sub">with Njezin decko</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Marko Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Marko Aleksic</span><span class="sub">with Cura</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Stjepan Aleksic as not called">✓</button><button class="who" type="button"><span class="name">Stjepan Aleksic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Ivan (Boki) Borilovic as called">✓</button><button class="who" type="button"><span class="name">Ivan (Boki) Borilovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Dario Baotic as not called">✓</button><button class="who" type="button"><span class="name">Dario Baotic</span><span class="sub">with Marinela</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Anica Dzoic as not called">✓</button><button class="who" type="button"><span class="name">Anica Dzoic</span><span class="sub">with Marijan</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Jela Grabner as not called">✓</button><button class="who" type="button"><span class="name">Jela Grabner</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mara Knezevic as not called">✓</button><button class="who" type="button"><span class="name">Mara Knezevic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Bozica as not called">✓</button><button class="who" type="button"><span class="name">Bozica</span><span class="sub">with Josip (Jole)</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Vera Vagner as not called">✓</button><button class="who" type="button"><span class="name">Vera Vagner</span><span class="sub">with Momak</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Branimir Wolf as not called">✓</button><button class="who" type="button"><span class="name">Branimir Wolf</span><span class="sub">with Ana</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Duro (Doko) Bilic as called">✓</button><button class="who" type="button"><span class="name">Duro (Doko) Bilic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ilija Sokic as not called">✓</button><button class="who" type="button"><span class="name">Ilija Sokic</span><span class="sub">with Jelena</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Zeljko Pavlovic as called">✓</button><button class="who" type="button"><span class="name">Zeljko Pavlovic</span><span class="sub">with Bilja</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Tino Tomasevic as called">✓</button><button class="who" type="button"><span class="name">Tino Tomasevic</span><span class="sub">with Ana</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Taso Ostojic as called">✓</button><button class="who" type="button"><span class="name">Taso Ostojic</span><span class="sub">with Mira</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Danijela Macner as not called">✓</button><button class="who" type="button"><span class="name">Danijela Macner</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Gordana Ivkovic-Maric as not called">✓</button><button class="who" type="button"><span class="name">Gordana Ivkovic-Maric</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Julijana Klacar as not called">✓</button><button class="who" type="button"><span class="name">Julijana Klacar</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ruda Mikulic as not called">✓</button><button class="who" type="button"><span class="name">Ruda Mikulic</span><span class="sub">with Nada</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Ivica Vinkovic</span><span class="sub">with Dragana</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Luka Vinkovic</span><span class="sub">with Nadja, Beba</span></button><span class="badge">+2</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Lucija Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Lucija Vinkovic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Zdravko Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Zdravko Vinkovic</span><span class="sub">with Jadranka</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Marija Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Marija Vinkovic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Adam Vinkovic as called">✓</button><button class="who" type="button"><span class="name">Adam Vinkovic</span><span class="sub">with Korina, Vita, Rafael, Vincent, Rebeka</span></button><span class="badge">+5</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Martina Flajnek as called">✓</button><button class="who" type="button"><span class="name">Martina Flajnek</span><span class="sub">with Franjo, Dijete 1, Dijete 2</span></button><span class="badge">+3</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mirna Mikec as not called">✓</button><button class="who" type="button"><span class="name">Mirna Mikec</span><span class="sub">with Ico</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Tomislav Mikec as called">✓</button><button class="who" type="button"><span class="name">Tomislav Mikec</span><span class="sub">with Maja, Jakov, Lukas</span></button><span class="badge">+3</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivan Mikec as not called">✓</button><button class="who" type="button"><span class="name">Ivan Mikec</span><span class="sub">with Marina, Eugen, Erika</span></button><span class="badge">+3</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Zeljko Matic as called">✓</button><button class="who" type="button"><span class="name">Zeljko Matic</span></button></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Nevenka Nedic as called">✓</button><button class="who" type="button"><span class="name">Nevenka Nedic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ivica Grigic as not called">✓</button><button class="who" type="button"><span class="name">Ivica Grigic</span><span class="sub">with Violeta</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Mateo Grigic as not called">✓</button><button class="who" type="button"><span class="name">Mateo Grigic</span><span class="sub">with Lea</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Josip Grigic as not called">✓</button><button class="who" type="button"><span class="name">Josip Grigic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Kata Knezevic as not called">✓</button><button class="who" type="button"><span class="name">Kata Knezevic</span><span class="sub">with Mato</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Zorica Spoljaric as not called">✓</button><button class="who" type="button"><span class="name">Zorica Spoljaric</span><span class="sub">with Igor</span></button><span class="badge">+1</span></div></li><li class="guest"><div class="row"><button class="tick" type="button" aria-label="Mark Irena Stimac as called">✓</button><button class="who" type="button"><span class="name">Irena Stimac</span><span class="sub">with Dzeno</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Emily Spoljaric as not called">✓</button><button class="who" type="button"><span class="name">Emily Spoljaric</span><span class="sub">with Decko</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Patrik Spoljaric as not called">✓</button><button class="who" type="button"><span class="name">Patrik Spoljaric</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Nikola Komes as not called">✓</button><button class="who" type="button"><span class="name">Nikola Komes</span><span class="sub">with Zena</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Karlo Komes as not called">✓</button><button class="who" type="button"><span class="name">Karlo Komes</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Jurica Wilam as not called">✓</button><button class="who" type="button"><span class="name">Jurica Wilam</span><span class="sub">with Zarucnica</span></button><span class="badge">+1</span></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Adam Marjanovic as not called">✓</button><button class="who" type="button"><span class="name">Adam Marjanovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Luka Dragicevic as not called">✓</button><button class="who" type="button"><span class="name">Luka Dragicevic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Hana as not called">✓</button><button class="who" type="button"><span class="name">Hana</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Petar Babic as not called">✓</button><button class="who" type="button"><span class="name">Petar Babic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Danko Putar as not called">✓</button><button class="who" type="button"><span class="name">Danko Putar</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Filip Vuckovic as not called">✓</button><button class="who" type="button"><span class="name">Filip Vuckovic</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Tomislav Hosni as not called">✓</button><button class="who" type="button"><span class="name">Tomislav Hosni</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Ana as not called">✓</button><button class="who" type="button"><span class="name">Ana</span></button></div></li><li class="guest done"><div class="row"><button class="tick" type="button" aria-label="Mark Goran Hacek as not called">✓</button><button class="who" type="button"><span class="name">Goran Hacek</span></button></div></li></ul>
-  <div class="empty" id="empty" hidden="">Everyone has been called.</div>
+  <section id="gate" class="card" hidden>
+    <h2 id="gate-title">Sign in</h2>
+    <p id="gate-text" style="margin:0;color:var(--muted)"></p>
+    <button class="primary" id="signin">Sign in with Google</button>
+  </section>
+
+  <div id="app" hidden>
+    <div class="stats">
+      <span><strong id="s-called">0</strong>/<strong id="s-parties">0</strong> called</span>
+      <span><strong id="s-heads">0</strong> people</span>
+      <span><strong id="s-kids">0</strong> kids · <strong id="s-inf">0</strong> infants</span>
+      <span><strong id="s-seated">0</strong> seated</span>
+    </div>
+    <div class="meter"><span id="bar"></span></div>
+
+    <div class="tabs">
+      <button id="tab-guests" aria-pressed="true">Guests</button>
+      <button id="tab-tables" aria-pressed="false">Tables</button>
+      <button id="btn-print">Print / PDF</button>
+    </div>
+
+    <section id="view-guests">
+      <form class="card" id="form" autocomplete="off">
+        <h2 id="form-title">Add a guest</h2>
+        <div class="two">
+          <div class="field"><label for="first">First name</label><input type="text" id="first" required></div>
+          <div class="field"><label for="last">Last name</label><input type="text" id="last"></div>
+        </div>
+        <label>Bringing others</label>
+        <div class="stepper">
+          <button type="button" id="minus" aria-label="One fewer">–</button>
+          <output id="count" aria-live="polite">0</output>
+          <button type="button" id="plus" aria-label="One more">+</button>
+          <span class="hint">Names optional</span>
+        </div>
+        <div id="companions"></div>
+        <button class="primary" type="submit" id="submit">Add to the list</button>
+        <button class="ghost" type="button" id="cancel" hidden>Cancel edit</button>
+      </form>
+
+      <div class="chips">
+        <button class="chip" data-filter="todo" aria-pressed="true">To call</button>
+        <button class="chip" data-filter="all" aria-pressed="false">Everyone</button>
+        <button class="chip" data-filter="done" aria-pressed="false">Called</button>
+        <button class="chip" data-filter="unseated" aria-pressed="false">Not seated</button>
+      </div>
+      <div class="field"><input type="search" id="search" placeholder="Search names"></div>
+      <ul class="list" id="list"></ul>
+      <div class="empty" id="empty" hidden></div>
+    </section>
+
+    <section id="view-tables" hidden>
+      <div class="toolbar">
+        <button class="btn" id="add10">Add table · 10 seats</button>
+        <button class="btn" id="add12">Add table · 12 seats</button>
+        <button class="btn accent" id="autoseat">Seat everyone left</button>
+      </div>
+      <div id="tables"></div>
+      <h2 style="font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:23px;margin:22px 0 10px">Still standing</h2>
+      <ul class="list" id="unseated"></ul>
+    </section>
+  </div>
 </div>
 
-<script>
-(function () {
-  var KEY = 'wedding-calls-v1';
-  var guests = [];
-  var filter = 'todo';
-  var query = '';
-  var editingId = null;
-  var open = {};
+<div id="print"></div>
 
-  var $ = function (id) { return document.getElementById(id); };
+<script type="module">
+/* ============================================================
+   1) Paste your Firebase web-app config here.
+      Until you do, the app runs in local-only mode (this browser).
+   ============================================================ */
+const firebaseConfig = {
+  apiKey: "PASTE_API_KEY",
+  authDomain: "PASTE_PROJECT.firebaseapp.com",
+  projectId: "PASTE_PROJECT",
+  storageBucket: "PASTE_PROJECT.appspot.com",
+  messagingSenderId: "PASTE_SENDER_ID",
+  appId: "PASTE_APP_ID"
+};
+const FB_VERSION = '10.12.2';
+const PLAN_COLLECTION = 'plans';
+const PLAN_ID = 'wedding';
+const LOCAL_KEY = 'wedding-plan-v2';
 
-  function load() {
-    try {
-      var raw = localStorage.getItem(KEY);
-      if (raw) { var parsed = JSON.parse(raw); if (Array.isArray(parsed)) guests = parsed; }
-    } catch (e) { guests = []; }
-  }
-  function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(guests)); } catch (e) {}
-  }
+const SEED = [
+["Luka","Cosic",1,""],["Luka","Garic",1,"Lucija"],["Filip","Jovanovic",1,"Mateja"],
+["Juraj","Cvetko",1,"Anamaria"],["Stjepan","Majhen",0,""],["Dinko","Simenc",1,"Tina"],
+["Antonio","Salov",1,"Nada,Rebeka"],["Dino","Harambasic",1,"Helena,Iskra"],["Milos","Gavrilovic",1,"Dusica"],
+["Darko","Steficar",1,""],["Adrin","Liber",1,""],["Mario","Hudolin",0,"Monika"],
+["Tomislav","Zivkovic",1,"Katarina"],["Sara","Zivkovic",1,""],["Lara","Zivkovic",1,""],
+["Melita","Zivkovic",1,""],["Kuma","Kata",1,""],["Ivan","Zivkovic",1,""],
+["Lovro","Lesic",0,""],["Josip","Lesic",0,"Lana"],["Luka","Golubicic",1,"Patricija,Lora"],
+["Laura","Babogredac",1,"Robert"],["Duka","Golubicic",1,""],["Mato","Golubicic",1,"Bilja"],
+["Marijana","Dominkovic",1,"Zelja"],["Marko","Lesic",0,"Eva"],["Kata","Bikic",1,"Bikic"],
+["Roberta","Pejic",1,"Tunjo,Dijete 1,Dijete 2"],["Kruno","Perikic",0,"Adriana"],["Ivica","Aleksic",1,"Anica"],
+["Ivica","Jemric",1,"Anica"],["Anamarija","Aleksic",1,"Njezin decko"],["Marko","Aleksic",1,"Cura"],
+["Stjepan","Aleksic",1,""],["Ivan (Boki)","Borilovic",0,""],["Dario","Baotic",1,"Marinela"],
+["Anica","Dzoic",1,"Marijan"],["Jela","Grabner",1,""],["Mara","Knezevic",1,""],
+["Bozica","",1,"Josip (Jole)"],["Vera","Vagner",1,"Momak"],["Branimir","Wolf",1,"Ana"],
+["Duro (Doko)","Bilic",0,""],["Ilija","Sokic",1,"Jelena"],["Zeljko","Pavlovic",0,"Bilja"],
+["Tino","Tomasevic",0,"Ana"],["Taso","Ostojic",0,"Mira"],["Danijela","Macner",1,""],
+["Gordana","Ivkovic-Maric",1,""],["Julijana","Klacar",1,""],["Ruda","Mikulic",1,"Nada"],
+["Ivica","Vinkovic",0,"Dragana"],["Luka","Vinkovic",0,"Nadja,Beba"],["Lucija","Vinkovic",0,""],
+["Zdravko","Vinkovic",0,"Jadranka"],["Marija","Vinkovic",0,""],
+["Adam","Vinkovic",0,"Korina,Vita,Rafael,Vincent,Rebeka"],
+["Martina","Flajnek",0,"Franjo,Dijete 1,Dijete 2"],["Mirna","Mikec",1,"Ico"],
+["Tomislav","Mikec",0,"Maja,Jakov,Lukas"],["Ivan","Mikec",1,"Marina,Eugen,Erika"],
+["Zeljko","Matic",0,""],["Nevenka","Nedic",0,""],["Ivica","Grigic",1,"Violeta"],
+["Mateo","Grigic",1,"Lea"],["Josip","Grigic",1,""],["Kata","Knezevic",1,"Mato"],
+["Zorica","Spoljaric",1,"Igor"],["Irena","Stimac",0,"Dzeno"],["Emily","Spoljaric",1,"Decko"],
+["Patrik","Spoljaric",1,""],["Nikola","Komes",1,"Zena"],["Karlo","Komes",1,""],
+["Jurica","Wilam",1,"Zarucnica"],["Adam","Marjanovic",1,""],["Luka","Dragicevic",1,""],
+["Hana","",1,""],["Petar","Babic",1,""],["Danko","Putar",1,""],["Filip","Vuckovic",1,""],
+["Tomislav","Hosni",1,""],["Ana","",1,""],["Goran","Hacek",1,""]
+];
 
-  // ---- form -----------------------------------------------------------
-  var count = 0;
-  function renderCompanions(values) {
-    var box = $('companions');
-    var existing = [].map.call(box.querySelectorAll('input'), function (i) { return i.value; });
-    var vals = values || existing;
-    box.innerHTML = '';
-    for (var i = 0; i < count; i++) {
-      var input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'Guest ' + (i + 1) + ' name';
-      input.value = vals[i] || '';
-      box.appendChild(input);
-    }
-    $('count').textContent = count;
-  }
-  $('plus').addEventListener('click', function () { if (count < 12) { count++; renderCompanions(); } });
-  $('minus').addEventListener('click', function () { if (count > 0) { count--; renderCompanions(); } });
+let guests = [], tables = [], filter = 'todo', query = '', editingId = null, open = {}, view = 'guests';
+let mode = 'local', fb = null, planRef = null, last = { g: {}, t: {} };
+const $ = (id) => document.getElementById(id);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const clone = (o) => JSON.parse(JSON.stringify(o));
+function stable(v) {
+  if (Array.isArray(v)) return '[' + v.map(stable).join(',') + ']';
+  if (v && typeof v === 'object') return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}';
+  return JSON.stringify(v === undefined ? null : v);
+}
 
-  function resetForm() {
-    editingId = null;
-    count = 0;
-    $('first').value = '';
-    $('last').value = '';
-    renderCompanions([]);
-    $('form-title').textContent = 'Add a guest';
-    $('submit').textContent = 'Add to the list';
-    $('cancel').hidden = true;
-  }
-
-  $('form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var first = $('first').value.trim();
-    if (!first) return;
-    var names = [].map.call($('companions').querySelectorAll('input'), function (i) { return i.value.trim(); });
-    if (editingId) {
-      var g = guests.filter(function (x) { return x.id === editingId; })[0];
-      if (g) { g.first = first; g.last = $('last').value.trim(); g.extra = count; g.names = names; }
-    } else {
-      guests.push({
-        id: String(Date.now()) + Math.random().toString(36).slice(2, 6),
-        first: first, last: $('last').value.trim(),
-        extra: count, names: names, called: false
-      });
-    }
-    save(); resetForm(); render();
+function guessAge(name) {
+  if (/beba|bebica/i.test(name)) return 'infant';
+  if (/dijete|dite|klinac/i.test(name)) return 'kid';
+  return 'adult';
+}
+function seed() {
+  guests = SEED.map(r => {
+    const id = uid();
+    const names = r[3] ? r[3].split(',') : [];
+    return { id, first: r[0], last: r[1], called: !!r[2], age: 'adult',
+      companions: names.map((n, i) => { n = n.trim(); return { id: id + '-' + i, name: n, age: guessAge(n) }; }) };
   });
+  tables = [];
+}
 
-  $('cancel').addEventListener('click', function () { resetForm(); });
-
-  function startEdit(g) {
-    editingId = g.id;
-    $('first').value = g.first;
-    $('last').value = g.last || '';
-    count = g.extra || 0;
-    renderCompanions(g.names || []);
-    $('form-title').textContent = 'Edit guest';
-    $('submit').textContent = 'Save changes';
-    $('cancel').hidden = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    $('first').focus();
+/* ---------------- storage ---------------- */
+function toMaps() {
+  const g = {}, t = {};
+  guests.forEach((x, i) => { g[x.id] = Object.assign(clone(x), { order: i }); });
+  tables.forEach((x, i) => { t[x.id] = Object.assign(clone(x), { order: i }); });
+  return { g, t };
+}
+function diff(prefix, cur, prev, upd) {
+  for (const k in cur) if (stable(cur[k]) !== stable(prev[k])) upd[prefix + '.' + k] = cur[k];
+  for (const k in prev) if (!(k in cur)) upd[prefix + '.' + k] = fb.deleteField();
+}
+function save() {
+  if (mode === 'local') {
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ guests, tables })); } catch (e) {}
+    return;
   }
-
-  // ---- filters --------------------------------------------------------
-  [].forEach.call(document.querySelectorAll('.chip'), function (c) {
-    c.addEventListener('click', function () {
-      filter = c.dataset.filter;
-      [].forEach.call(document.querySelectorAll('.chip'), function (o) {
-        o.setAttribute('aria-pressed', String(o === c));
-      });
-      render();
-    });
-  });
-  $('search').addEventListener('input', function () { query = this.value.toLowerCase().trim(); render(); });
-
-  // ---- list -----------------------------------------------------------
-  function fullName(g) { return (g.first + ' ' + (g.last || '')).trim(); }
-
-  function render() {
-    var total = guests.length;
-    var called = guests.filter(function (g) { return g.called; }).length;
-    var heads = guests.reduce(function (n, g) { return n + 1 + (g.extra || 0); }, 0);
-    $('t-called').textContent = called;
-    $('t-total').textContent = total;
-    $('t-heads').textContent = heads;
-    $('bar').style.width = total ? (called / total * 100) + '%' : '0';
-
-    var shown = guests.filter(function (g) {
-      if (filter === 'todo' && g.called) return false;
-      if (filter === 'done' && !g.called) return false;
-      if (query) {
-        var hay = (fullName(g) + ' ' + (g.names || []).join(' ')).toLowerCase();
-        if (hay.indexOf(query) === -1) return false;
-      }
-      return true;
-    });
-
-    var list = $('list');
-    list.innerHTML = '';
-    shown.forEach(function (g) {
-      var li = document.createElement('li');
-      li.className = 'guest' + (g.called ? ' done' : '');
-
-      var row = document.createElement('div');
-      row.className = 'row';
-
-      var tick = document.createElement('button');
-      tick.className = 'tick';
-      tick.type = 'button';
-      tick.textContent = '✓';
-      tick.setAttribute('aria-label', g.called ? 'Mark ' + fullName(g) + ' as not called' : 'Mark ' + fullName(g) + ' as called');
-      tick.addEventListener('click', function () { g.called = !g.called; save(); render(); });
-
-      var who = document.createElement('button');
-      who.className = 'who';
-      who.type = 'button';
-      var listed = (g.names || []).filter(Boolean);
-      who.innerHTML = '<span class="name"></span>';
-      who.querySelector('.name').textContent = fullName(g);
-      if (listed.length) {
-        var sub = document.createElement('span');
-        sub.className = 'sub';
-        sub.textContent = 'with ' + listed.join(', ');
-        who.appendChild(sub);
-      }
-      who.addEventListener('click', function () { open[g.id] = !open[g.id]; render(); });
-
-      row.appendChild(tick);
-      row.appendChild(who);
-      if (g.extra) {
-        var badge = document.createElement('span');
-        badge.className = 'badge';
-        badge.textContent = '+' + g.extra;
-        row.appendChild(badge);
-      }
-      li.appendChild(row);
-
-      if (open[g.id]) {
-        var d = document.createElement('div');
-        d.className = 'detail';
-        if (g.extra) {
-          var ol = document.createElement('ol');
-          for (var i = 0; i < g.extra; i++) {
-            var item = document.createElement('li');
-            item.textContent = (g.names && g.names[i]) ? g.names[i] : 'name not given';
-            ol.appendChild(item);
-          }
-          d.appendChild(ol);
-        } else {
-          var p = document.createElement('p');
-          p.style.margin = '0 0 10px';
-          p.textContent = 'Coming alone.';
-          d.appendChild(p);
-        }
-        var acts = document.createElement('div');
-        acts.className = 'acts';
-        var ed = document.createElement('button');
-        ed.className = 'edit'; ed.type = 'button'; ed.textContent = 'Edit';
-        ed.addEventListener('click', function () { startEdit(g); });
-        var del = document.createElement('button');
-        del.className = 'del'; del.type = 'button'; del.textContent = 'Remove';
-        del.addEventListener('click', function () {
-          if (!confirm('Remove ' + fullName(g) + ' from the list?')) return;
-          guests = guests.filter(function (x) { return x.id !== g.id; });
-          if (editingId === g.id) resetForm();
-          save(); render();
-        });
-        acts.appendChild(ed); acts.appendChild(del);
-        d.appendChild(acts);
-        li.appendChild(d);
-      }
-
-      list.appendChild(li);
-    });
-
-    var empty = $('empty');
-    if (shown.length) { empty.hidden = true; }
-    else {
-      empty.hidden = false;
-      if (!total) empty.textContent = 'No one on the list yet. Add your first guest above.';
-      else if (query) empty.textContent = 'No names match "' + $('search').value.trim() + '".';
-      else if (filter === 'todo') empty.textContent = 'Everyone has been called.';
-      else empty.textContent = 'No calls made yet.';
-    }
+  const cur = toMaps();
+  const upd = {};
+  diff('guests', cur.g, last.g, upd);
+  diff('tables', cur.t, last.t, upd);
+  last = clone(cur);
+  if (Object.keys(upd).length) {
+    setSync('Saving…');
+    fb.updateDoc(planRef, upd).catch(e => setSync('Save failed (' + (e.code || e.message) + ')'));
   }
-
-  load();
-  renderCompanions([]);
+}
+function mergeList(arr, map) {
+  const byId = {};
+  arr.forEach(o => { byId[o.id] = o; });
+  return Object.keys(map).map(k => {
+    const src = clone(map[k]);
+    const o = byId[k] || {};
+    Object.keys(o).forEach(key => { if (!(key in src)) delete o[key]; });
+    return Object.assign(o, src);
+  }).sort((a, b) => (a.order || 0) - (b.order || 0));
+}
+function applyRemote(data) {
+  guests = mergeList(guests, data.guests || {});
+  tables = mergeList(tables, data.tables || {});
+  last = { g: clone(data.guests || {}), t: clone(data.tables || {}) };
   render();
-})();
+}
+
+function setSync(t) { $('sync').textContent = t; }
+function showApp() { $('gate').hidden = true; $('app').hidden = false; }
+function gate(title, text, showSignIn) {
+  $('app').hidden = true;
+  $('gate').hidden = false;
+  $('gate-title').textContent = title;
+  $('gate-text').textContent = text;
+  $('signin').hidden = !showSignIn;
+}
+
+function startLocal() {
+  mode = 'local';
+  try {
+    const raw = localStorage.getItem(LOCAL_KEY);
+    const d = raw ? JSON.parse(raw) : null;
+    if (d && Array.isArray(d.guests)) { guests = d.guests; tables = d.tables || []; } else seed();
+  } catch (e) { seed(); }
+  setSync('Local only — add Firebase config to share');
+  showApp();
+  render();
+}
+
+async function startCloud() {
+  mode = 'cloud';
+  const base = 'https://www.gstatic.com/firebasejs/' + FB_VERSION + '/';
+  const [appMod, authMod, fsMod] = await Promise.all([
+    import(base + 'firebase-app.js'),
+    import(base + 'firebase-auth.js'),
+    import(base + 'firebase-firestore.js')
+  ]);
+  fb = fsMod;
+  const app = appMod.initializeApp(firebaseConfig);
+  const auth = authMod.getAuth(app);
+  let db;
+  try {
+    db = fsMod.initializeFirestore(app, {
+      localCache: fsMod.persistentLocalCache({ tabManager: fsMod.persistentMultipleTabManager() })
+    });
+  } catch (e) { db = fsMod.getFirestore(app); }
+  planRef = fsMod.doc(db, PLAN_COLLECTION, PLAN_ID);
+
+  $('signin').onclick = () => authMod.signInWithPopup(auth, new authMod.GoogleAuthProvider())
+    .catch(e => gate('Sign-in failed', e.message, true));
+  $('signout').onclick = () => authMod.signOut(auth);
+
+  let unsub = null;
+  authMod.onAuthStateChanged(auth, user => {
+    if (unsub) { unsub(); unsub = null; }
+    guests = []; tables = []; last = { g: {}, t: {} };
+    if (!user) {
+      $('who-email').textContent = '';
+      $('signout').hidden = true;
+      setSync('');
+      gate('Sign in', 'Use the Google account that has access to the plan.', true);
+      return;
+    }
+    $('who-email').textContent = user.email;
+    $('signout').hidden = false;
+    setSync('Connecting…');
+    unsub = fsMod.onSnapshot(planRef, { includeMetadataChanges: true }, async snap => {
+      if (!snap.exists()) {
+        try {
+          await fsMod.runTransaction(db, async tx => {
+            const s = await tx.get(planRef);
+            if (s.exists()) return;
+            seed();
+            const m = toMaps();
+            tx.set(planRef, { guests: m.g, tables: m.t });
+          });
+        } catch (e) { gate('Could not create the plan', e.message, false); }
+        return;
+      }
+      applyRemote(snap.data());
+      showApp();
+      setSync(snap.metadata.hasPendingWrites ? 'Saving…' : snap.metadata.fromCache ? 'Offline — will sync' : 'Synced');
+    }, err => {
+      if (err.code === 'permission-denied') gate('No access', user.email + ' is not on the access list. Ask the owner to add it.', false);
+      else gate('Connection problem', err.message, false);
+    });
+  });
+}
+
+/* ---------------- people helpers ---------------- */
+const fullName = (g) => (g.first + ' ' + (g.last || '')).trim();
+function party(g) {
+  const out = [{ id: g.id, name: fullName(g), age: g.age || 'adult', main: true, guest: g }];
+  (g.companions || []).forEach((c, i) => out.push({ id: c.id, name: c.name || (fullName(g) + ' +' + (i + 1)), age: c.age || 'adult', main: false, guest: g }));
+  return out;
+}
+const allPeople = () => guests.flatMap(party);
+function personIndex() { const m = {}; allPeople().forEach(p => { m[p.id] = p; }); return m; }
+function seatOf(pid) {
+  for (const t of tables) { const i = t.seats.indexOf(pid); if (i > -1) return { table: t, index: i }; }
+  return null;
+}
+function unseatPerson(pid) { tables.forEach(t => { const i = t.seats.indexOf(pid); if (i > -1) t.seats[i] = null; }); }
+const freeCount = (t) => t.seats.filter(s => !s).length;
+function findRun(t, n) {
+  const s = t.seats, len = s.length;
+  for (let start = 0; start < len; start++) {
+    const idx = [];
+    let ok = true;
+    for (let k = 0; k < n; k++) { const j = (start + k) % len; if (s[j]) { ok = false; break; } idx.push(j); }
+    if (ok) return idx;
+  }
+  return null;
+}
+function freeSeats(t, n) {
+  const idx = [];
+  for (let i = 0; i < t.seats.length && idx.length < n; i++) if (!t.seats[i]) idx.push(i);
+  return idx.length === n ? idx : null;
+}
+function seatParty(g, t) {
+  const people = party(g).filter(p => !seatOf(p.id));
+  if (!people.length) return true;
+  const idx = findRun(t, people.length) || freeSeats(t, people.length);
+  if (!idx) return false;
+  idx.forEach((i, k) => { t.seats[i] = people[k].id; });
+  return true;
+}
+
+/* ---------------- form ---------------- */
+let count = 0;
+function renderCompanions(values) {
+  const box = $('companions');
+  const existing = [...box.querySelectorAll('input')].map(i => i.value);
+  const vals = values || existing;
+  box.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Guest ' + (i + 1) + ' name';
+    input.value = vals[i] || '';
+    box.appendChild(input);
+  }
+  $('count').textContent = count;
+}
+$('plus').addEventListener('click', () => { if (count < 12) { count++; renderCompanions(); } });
+$('minus').addEventListener('click', () => { if (count > 0) { count--; renderCompanions(); } });
+function resetForm() {
+  editingId = null; count = 0;
+  $('first').value = ''; $('last').value = '';
+  renderCompanions([]);
+  $('form-title').textContent = 'Add a guest';
+  $('submit').textContent = 'Add to the list';
+  $('cancel').hidden = true;
+}
+$('form').addEventListener('submit', e => {
+  e.preventDefault();
+  const first = $('first').value.trim();
+  if (!first) return;
+  const names = [...$('companions').querySelectorAll('input')].map(i => i.value.trim());
+  if (editingId) {
+    const g = guests.find(x => x.id === editingId);
+    if (g) {
+      g.first = first; g.last = $('last').value.trim();
+      const old = g.companions || [];
+      old.slice(names.length).forEach(c => unseatPerson(c.id));
+      g.companions = names.map((n, i) => old[i]
+        ? { id: old[i].id, name: n, age: old[i].age || 'adult' }
+        : { id: g.id + '-' + uid(), name: n, age: guessAge(n) });
+    }
+  } else {
+    const id = uid();
+    guests.push({ id, first, last: $('last').value.trim(), called: false, age: 'adult',
+      companions: names.map((n, i) => ({ id: id + '-' + i, name: n, age: guessAge(n) })) });
+  }
+  save(); resetForm(); render();
+});
+$('cancel').addEventListener('click', resetForm);
+function startEdit(g) {
+  editingId = g.id;
+  $('first').value = g.first; $('last').value = g.last || '';
+  count = (g.companions || []).length;
+  renderCompanions((g.companions || []).map(c => c.name));
+  $('form-title').textContent = 'Edit guest';
+  $('submit').textContent = 'Save changes';
+  $('cancel').hidden = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  $('first').focus();
+}
+
+/* ---------------- tabs / filters ---------------- */
+function setView(v) {
+  view = v;
+  $('view-guests').hidden = v !== 'guests';
+  $('view-tables').hidden = v !== 'tables';
+  $('tab-guests').setAttribute('aria-pressed', String(v === 'guests'));
+  $('tab-tables').setAttribute('aria-pressed', String(v === 'tables'));
+  render();
+}
+$('tab-guests').addEventListener('click', () => setView('guests'));
+$('tab-tables').addEventListener('click', () => setView('tables'));
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+  filter = c.dataset.filter;
+  document.querySelectorAll('.chip').forEach(o => o.setAttribute('aria-pressed', String(o === c)));
+  render();
+}));
+$('search').addEventListener('input', function () { query = this.value.toLowerCase().trim(); render(); });
+
+/* ---------------- modal ---------------- */
+function sheet(title, build) {
+  const scrim = document.createElement('div');
+  scrim.className = 'scrim';
+  const box = document.createElement('div');
+  box.className = 'sheet';
+  const h = document.createElement('h3');
+  h.textContent = title;
+  box.appendChild(h);
+  const close = () => scrim.remove();
+  build(box, close);
+  const cancel = document.createElement('button');
+  cancel.className = 'ghost';
+  cancel.textContent = 'Close';
+  cancel.addEventListener('click', close);
+  box.appendChild(cancel);
+  scrim.appendChild(box);
+  scrim.addEventListener('click', e => { if (e.target === scrim) close(); });
+  document.body.appendChild(scrim);
+}
+function option(parent, label, sub, fn) {
+  const b = document.createElement('button');
+  b.className = 'opt'; b.type = 'button'; b.textContent = label;
+  if (sub) { const s = document.createElement('small'); s.textContent = sub; b.appendChild(s); }
+  b.addEventListener('click', fn);
+  parent.appendChild(b);
+}
+
+/* ---------------- tables ---------------- */
+function addTable(size) {
+  tables.push({ id: uid(), name: 'Table ' + (tables.length + 1), size, seats: new Array(size).fill(null) });
+  save(); render();
+}
+$('add10').addEventListener('click', () => addTable(10));
+$('add12').addEventListener('click', () => addTable(12));
+$('autoseat').addEventListener('click', () => {
+  let left = 0;
+  guests.forEach(g => {
+    if (!party(g).some(p => !seatOf(p.id))) return;
+    let placed = false;
+    for (let i = 0; i < tables.length && !placed; i++) placed = seatParty(g, tables[i]);
+    if (!placed) left++;
+  });
+  save(); render();
+  if (left) alert(left + ' parties did not fit. Add more tables and press again.');
+});
+
+function pickPersonForSeat(t, i) {
+  sheet('Seat ' + (i + 1) + ' · ' + t.name, (box, close) => {
+    let any = false;
+    guests.forEach(g => party(g).forEach(p => {
+      if (seatOf(p.id)) return;
+      any = true;
+      option(box, p.name, p.main ? null : 'with ' + fullName(g), () => { t.seats[i] = p.id; save(); close(); render(); });
+    }));
+    if (!any) { const e = document.createElement('p'); e.textContent = 'Everyone has a seat.'; box.appendChild(e); }
+  });
+}
+function seatMenu(t, i, p) {
+  sheet(p.name, (box, close) => {
+    option(box, 'Take out of the seat', null, () => { t.seats[i] = null; save(); close(); render(); });
+    option(box, 'Seat the whole party here', 'Puts everyone from this party at ' + t.name, () => {
+      party(p.guest).forEach(m => unseatPerson(m.id));
+      seatParty(p.guest, t); save(); close(); render();
+    });
+    tables.forEach(ot => {
+      if (ot.id === t.id || !freeCount(ot)) return;
+      option(box, 'Move to ' + ot.name, freeCount(ot) + ' seats free', () => {
+        const free = freeSeats(ot, 1);
+        t.seats[i] = null; ot.seats[free[0]] = p.id; save(); close(); render();
+      });
+    });
+  });
+}
+function seatPartyMenu(g) {
+  sheet('Seat ' + fullName(g), (box, close) => {
+    const n = party(g).filter(p => !seatOf(p.id)).length;
+    let any = false;
+    tables.forEach(t => {
+      if (freeCount(t) < n) return;
+      any = true;
+      option(box, t.name, freeCount(t) + ' of ' + t.size + ' seats free', () => { seatParty(g, t); save(); close(); render(); });
+    });
+    if (!any) { const e = document.createElement('p'); e.textContent = n ? 'No table has ' + n + ' free seats. Add another table.' : 'Already seated.'; box.appendChild(e); }
+  });
+}
+
+function renderTables() {
+  const idx = personIndex();
+  const wrapEl = $('tables');
+  wrapEl.innerHTML = '';
+  if (!tables.length) {
+    const e = document.createElement('div');
+    e.className = 'empty';
+    e.textContent = 'No tables yet. Add one above, then seat people.';
+    wrapEl.appendChild(e);
+  }
+  tables.forEach(t => {
+    const box = document.createElement('div');
+    box.className = 'table';
+    const head = document.createElement('div');
+    head.className = 'thead';
+    const nm = document.createElement('div');
+    nm.className = 'tname';
+    nm.textContent = t.name;
+    nm.title = 'Tap to rename';
+    nm.addEventListener('click', () => {
+      const v = prompt('Table name', t.name);
+      if (v !== null && v.trim()) { t.name = v.trim(); save(); render(); }
+    });
+    const meta = document.createElement('span');
+    meta.className = 'tmeta';
+    meta.textContent = (t.size - freeCount(t)) + '/' + t.size;
+    const x = document.createElement('button');
+    x.className = 'x'; x.type = 'button'; x.textContent = 'Delete';
+    x.addEventListener('click', () => {
+      if (!confirm('Delete ' + t.name + '? Everyone at it goes back to the unseated list.')) return;
+      tables = tables.filter(o => o.id !== t.id); save(); render();
+    });
+    head.append(nm, meta, x);
+    box.appendChild(head);
+
+    const grid = document.createElement('div');
+    grid.className = 'seats';
+    t.seats.forEach((pid, i) => {
+      let p = pid ? idx[pid] : null;
+      if (pid && !p) { t.seats[i] = null; p = null; }
+      const b = document.createElement('button');
+      b.className = 'seat' + (p ? '' : ' free');
+      b.type = 'button';
+      const no = document.createElement('span'); no.className = 'no'; no.textContent = i + 1;
+      const pn = document.createElement('span'); pn.className = 'pname'; pn.textContent = p ? p.name : 'empty';
+      b.append(no, pn);
+      if (p && p.age !== 'adult') {
+        const tg = document.createElement('span'); tg.className = 'tag';
+        tg.textContent = p.age === 'infant' ? 'infant' : 'kid';
+        b.appendChild(tg);
+      }
+      b.addEventListener('click', () => p ? seatMenu(t, i, p) : pickPersonForSeat(t, i));
+      grid.appendChild(b);
+    });
+    box.appendChild(grid);
+    wrapEl.appendChild(box);
+  });
+
+  const ul = $('unseated');
+  ul.innerHTML = '';
+  let none = true;
+  guests.forEach(g => {
+    const left = party(g).filter(p => !seatOf(p.id));
+    if (!left.length) return;
+    none = false;
+    const li = document.createElement('li');
+    li.className = 'guest';
+    const row = document.createElement('div');
+    row.className = 'row';
+    const who = document.createElement('span');
+    who.className = 'who';
+    who.innerHTML = '<span class="name"></span><span class="sub"></span>';
+    who.querySelector('.name').textContent = fullName(g);
+    who.querySelector('.sub').textContent = left.length + (left.length === 1 ? ' person' : ' people') + ' to seat';
+    const b = document.createElement('button');
+    b.className = 'btn'; b.type = 'button'; b.textContent = 'Seat';
+    b.addEventListener('click', () => seatPartyMenu(g));
+    row.append(who, b);
+    li.appendChild(row);
+    ul.appendChild(li);
+  });
+  if (none) {
+    const li = document.createElement('li');
+    li.className = 'empty';
+    li.textContent = tables.length ? 'Everybody has a seat.' : 'Add a table to start seating.';
+    ul.appendChild(li);
+  }
+}
+
+/* ---------------- guests ---------------- */
+function ageRow(parent, p, onChange) {
+  const r = document.createElement('div');
+  r.className = 'person';
+  const n = document.createElement('span');
+  n.className = 'pn';
+  n.textContent = p.name;
+  r.appendChild(n);
+  const s = seatOf(p.id);
+  if (s) {
+    const sp = document.createElement('span');
+    sp.className = 'seatpill';
+    sp.textContent = s.table.name + ' · ' + (s.index + 1);
+    r.appendChild(sp);
+  }
+  [['infant', 'infant 1–3'], ['kid', 'kid 3–12']].forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'age'; b.type = 'button'; b.textContent = a[1];
+    b.setAttribute('aria-pressed', String(p.age === a[0]));
+    b.addEventListener('click', () => onChange(p.age === a[0] ? 'adult' : a[0]));
+    r.appendChild(b);
+  });
+  parent.appendChild(r);
+}
+
+function renderGuests() {
+  const shown = guests.filter(g => {
+    if (filter === 'todo' && g.called) return false;
+    if (filter === 'done' && !g.called) return false;
+    if (filter === 'unseated' && !party(g).some(p => !seatOf(p.id))) return false;
+    if (query) {
+      const hay = (fullName(g) + ' ' + (g.companions || []).map(c => c.name).join(' ')).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  });
+
+  const list = $('list');
+  list.innerHTML = '';
+  shown.forEach(g => {
+    const li = document.createElement('li');
+    li.className = 'guest' + (g.called ? ' done' : '');
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    const tick = document.createElement('button');
+    tick.className = 'tick'; tick.type = 'button'; tick.textContent = '✓';
+    tick.setAttribute('aria-label', (g.called ? 'Mark as not called: ' : 'Mark as called: ') + fullName(g));
+    tick.addEventListener('click', () => { g.called = !g.called; save(); render(); });
+
+    const who = document.createElement('button');
+    who.className = 'who'; who.type = 'button';
+    who.innerHTML = '<span class="name"></span>';
+    who.querySelector('.name').textContent = fullName(g);
+    const listed = (g.companions || []).map(c => c.name).filter(Boolean);
+    if (listed.length) {
+      const sub = document.createElement('span');
+      sub.className = 'sub';
+      sub.textContent = 'with ' + listed.join(', ');
+      who.appendChild(sub);
+    }
+    who.addEventListener('click', () => { open[g.id] = !open[g.id]; render(); });
+
+    row.append(tick, who);
+    const seat0 = seatOf(g.id);
+    if (seat0) {
+      const sp = document.createElement('span');
+      sp.className = 'seatpill';
+      sp.textContent = seat0.table.name;
+      row.appendChild(sp);
+    }
+    if ((g.companions || []).length) {
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = '+' + g.companions.length;
+      row.appendChild(badge);
+    }
+    li.appendChild(row);
+
+    if (open[g.id]) {
+      const d = document.createElement('div');
+      d.className = 'detail';
+      ageRow(d, party(g)[0], v => { g.age = v; save(); render(); });
+      (g.companions || []).forEach((c, i) => {
+        ageRow(d, { id: c.id, name: c.name || ('Guest ' + (i + 1)), age: c.age || 'adult' }, v => { c.age = v; save(); render(); });
+      });
+      const acts = document.createElement('div');
+      acts.className = 'acts';
+      const ed = document.createElement('button');
+      ed.className = 'edit'; ed.type = 'button'; ed.textContent = 'Edit names';
+      ed.addEventListener('click', () => startEdit(g));
+      const st = document.createElement('button');
+      st.className = 'edit'; st.type = 'button'; st.textContent = 'Seat party';
+      st.addEventListener('click', () => seatPartyMenu(g));
+      const del = document.createElement('button');
+      del.className = 'del'; del.type = 'button'; del.textContent = 'Remove';
+      del.addEventListener('click', () => {
+        if (!confirm('Remove ' + fullName(g) + ' and their party?')) return;
+        party(g).forEach(p => unseatPerson(p.id));
+        guests = guests.filter(x => x.id !== g.id);
+        if (editingId === g.id) resetForm();
+        save(); render();
+      });
+      acts.append(ed, st, del);
+      d.appendChild(acts);
+      li.appendChild(d);
+    }
+    list.appendChild(li);
+  });
+
+  const empty = $('empty');
+  if (shown.length) empty.hidden = true;
+  else {
+    empty.hidden = false;
+    if (!guests.length) empty.textContent = 'Nobody on the list.';
+    else if (query) empty.textContent = 'No names match "' + $('search').value.trim() + '".';
+    else if (filter === 'todo') empty.textContent = 'Everyone has been called.';
+    else if (filter === 'unseated') empty.textContent = 'Everyone has a seat.';
+    else empty.textContent = 'No calls made yet.';
+  }
+}
+
+function render() {
+  const people = allPeople();
+  const called = guests.filter(g => g.called).length;
+  $('s-called').textContent = called;
+  $('s-parties').textContent = guests.length;
+  $('s-heads').textContent = people.length;
+  $('s-kids').textContent = people.filter(p => p.age === 'kid').length;
+  $('s-inf').textContent = people.filter(p => p.age === 'infant').length;
+  $('s-seated').textContent = people.filter(p => seatOf(p.id)).length;
+  $('bar').style.width = guests.length ? (called / guests.length * 100) + '%' : '0';
+  if (view === 'guests') renderGuests(); else renderTables();
+}
+
+/* ---------------- print / PDF ---------------- */
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+$('btn-print').addEventListener('click', () => {
+  const idx = personIndex();
+  let h = '<h2>Seating plan</h2>';
+  if (!tables.length) h += '<p>No tables set up yet.</p>';
+  tables.forEach(t => {
+    h += '<div class="ptable"><h3>' + esc(t.name) + '</h3><ol>';
+    t.seats.forEach(pid => {
+      const p = pid ? idx[pid] : null;
+      const tag = p && p.age !== 'adult' ? ' (' + (p.age === 'infant' ? 'infant' : 'kid') + ')' : '';
+      h += '<li>' + (p ? esc(p.name) + tag : '—') + '</li>';
+    });
+    h += '</ol></div>';
+  });
+  const rows = allPeople().map(p => {
+    const s = seatOf(p.id);
+    return { name: p.name, party: p.main ? '' : fullName(p.guest),
+      table: s ? s.table.name : '', seat: s ? s.index + 1 : '',
+      age: p.age === 'adult' ? '' : (p.age === 'infant' ? 'infant' : 'kid') };
+  }).sort((a, b) => a.name.localeCompare(b.name, 'hr'));
+  h += '<div class="brk"></div><h2>Guest checklist · ' + rows.length + ' people</h2>';
+  h += '<table class="chk"><thead><tr><th></th><th>Name</th><th>With</th><th>Table</th><th>Seat</th><th>Age</th></tr></thead><tbody>';
+  rows.forEach(r => {
+    h += '<tr><td><span class="box"></span></td><td>' + esc(r.name) + '</td><td>' + esc(r.party) +
+      '</td><td>' + esc(r.table) + '</td><td>' + esc(r.seat) + '</td><td>' + esc(r.age) + '</td></tr>';
+  });
+  h += '</tbody></table>';
+  $('print').innerHTML = h;
+  window.print();
+});
+
+/* ---------------- boot ---------------- */
+renderCompanions([]);
+if (firebaseConfig.apiKey.startsWith('PASTE')) startLocal();
+else startCloud().catch(e => gate('Could not load Firebase', e.message, false));
 </script>
-
-
 </body>
+</html>
