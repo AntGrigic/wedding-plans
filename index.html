@@ -11,6 +11,7 @@
   :root {
     --paper: #F2ECEA; --surface: #FBF8F7; --ink: #2A2124; --muted: #8B7B7E;
     --line: #DED3D1; --claret: #7A2E3E; --sage: #4F6B57; --gold: #9A7B3F;
+    --on-s: 36%; --on-l: 38%; --on-ink: #FFFFFF;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -20,13 +21,16 @@
     :root:not([data-theme="light"]) {
       --paper: #191416; --surface: #221B1E; --ink: #F0E8E9; --muted: #9C8B8F;
       --line: #372C30; --claret: #D98A9C; --sage: #93B79B; --gold: #CBA95F;
+      --on-s: 38%; --on-l: 70%; --on-ink: #1E1619;
     }
   }
   :root[data-theme="dark"] {
     --paper: #191416; --surface: #221B1E; --ink: #F0E8E9; --muted: #9C8B8F;
     --line: #372C30; --claret: #D98A9C; --sage: #93B79B; --gold: #CBA95F;
+    --on-s: 38%; --on-l: 70%; --on-ink: #1E1619;
   }
   *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
   body { margin: 0; min-height: 100%; background: var(--paper); color: var(--ink);
     font-family: Karla, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.45; }
@@ -101,19 +105,99 @@
   .btn { font: inherit; font-size: 14px; padding: 10px 14px; border-radius: 9px; border: 1px solid var(--line);
     background: var(--surface); color: var(--ink); cursor: pointer; }
   .btn.accent { background: var(--claret); border-color: var(--claret); color: var(--surface); font-weight: 600; }
-  .table { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
-  .thead { display: flex; align-items: baseline; gap: 10px; padding: 12px 14px 8px; }
-  .thead .tname { font-family: "Instrument Serif", Georgia, serif; font-size: 22px; flex: 1 1 auto; cursor: pointer; }
-  .thead .tmeta { font-size: 13px; color: var(--muted); }
-  .thead .x { font: inherit; font-size: 13px; background: none; border: 0; color: var(--claret); cursor: pointer; text-decoration: underline; }
-  .seats { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
-  @media (min-width: 520px) { .seats { grid-template-columns: 1fr 1fr; } }
-  .seat { display: flex; align-items: center; gap: 9px; width: 100%; font: inherit; text-align: left; padding: 9px 13px;
-    cursor: pointer; background: var(--surface); color: var(--ink); border: 0; }
-  .seat .no { flex: 0 0 auto; width: 22px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .seat .pname { flex: 1 1 auto; font-size: 15px; overflow-wrap: anywhere; }
-  .seat.free .pname { color: var(--muted); font-style: italic; }
-  .tag { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--gold); color: var(--gold); white-space: nowrap; }
+  .howto { font-size: 13px; color: var(--muted); margin: -4px 0 14px; }
+
+  /* ---- seating: round tables ---- */
+  .wrap.tables-view .tabs, .wrap.tables-view .meter { max-width: 648px; }
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .tgrid > .empty { grid-column: 1 / -1; }
+  .rtable { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-width: 0;
+    transition: border-color .12s, box-shadow .12s; }
+  .rtable.over { border-color: var(--sage); box-shadow: 0 0 0 1px var(--sage); }
+  .rtable.nofit { border-color: var(--claret); box-shadow: 0 0 0 1px var(--claret); }
+  .rt { position: relative; width: 100%; max-width: 320px; aspect-ratio: 1 / 1; margin: 0 auto; container-type: inline-size; }
+  .rt-top { position: absolute; left: 50%; top: 50%; width: 52%; height: 52%; transform: translate(-50%, -50%);
+    border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: inherit;
+    padding: 8%; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; text-align: center; overflow: hidden; }
+  .rt-top .tn { font-family: "Instrument Serif", Georgia, serif; font-size: 20px; font-size: 7.4cqw; line-height: 1.05; overflow-wrap: anywhere; }
+  .rt-top .tc { font-size: 12px; font-size: 4.4cqw; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .seat { position: absolute; width: 16%; height: 16%; transform: translate(-50%, -50%); border-radius: 50%; padding: 0;
+    border: 1.5px dashed var(--line); background: var(--surface); color: var(--muted);
+    font: 600 11px/1 Karla, "Helvetica Neue", Arial, sans-serif; font-size: 4.2cqw; font-variant-numeric: tabular-nums;
+    display: grid; place-items: center; cursor: pointer; transition: transform .12s, box-shadow .12s, opacity .12s;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .seat.on { border: 0; background: hsl(var(--h) var(--on-s) var(--on-l)); color: var(--on-ink); font-size: 13px; font-size: 4.8cqw; cursor: grab; }
+  .seat.kid { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--gold); }
+  @media (hover: hover) { .seat:hover { transform: translate(-50%, -50%) scale(1.08); } }
+  .seat.lift { opacity: .3; }
+  .seat.target { opacity: 1; border: 2px solid var(--sage); background: color-mix(in srgb, var(--sage) 22%, var(--surface));
+    color: var(--sage); transform: translate(-50%, -50%) scale(1.12); }
+  .seat.swap { opacity: 1; box-shadow: 0 0 0 3px var(--sage); transform: translate(-50%, -50%) scale(1.12); }
+  .rt-parties { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .pchip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; font: inherit; font-size: 12.5px;
+    padding: 4px 10px 4px 7px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper);
+    color: var(--ink); cursor: grab; text-align: left; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .dot { flex: 0 0 auto; width: 11px; height: 11px; border-radius: 50%; background: hsl(var(--h) var(--on-s) var(--on-l)); }
+  .rt-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
+  .rt-foot .x { font: inherit; font-size: 13px; background: none; border: 0; color: var(--claret); cursor: pointer;
+    text-decoration: underline; padding: 4px 0; }
+
+  /* ---- seating: people still to seat ---- */
+  #bench .bench-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  #bench h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 23px; margin: 0; flex: 1 1 auto; }
+  #bench-count { font-size: 13px; color: var(--muted); }
+  #bench .ghost { padding: 0; font-size: 13px; }
+  #bench.over { box-shadow: inset 0 0 0 2px var(--sage); }
+  .blist { display: flex; flex-wrap: wrap; gap: 6px; }
+  .blist > .empty { flex: 1 1 100%; }
+  .pcard { max-width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); transition: opacity .12s; }
+  .pcard.open { flex: 1 1 100%; }
+  .phead { display: flex; align-items: center; gap: 7px; max-width: 100%; font: inherit; font-size: 14px; color: var(--ink);
+    background: none; border: 0; padding: 7px 10px 7px 9px; cursor: grab; text-align: left;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .pcard.open .phead { width: 100%; }
+  .pnm { min-width: 0; overflow-wrap: anywhere; }
+  .pct { flex: 0 0 auto; font-size: 12px; font-weight: 600; color: var(--claret); border: 1px solid var(--line);
+    border-radius: 999px; padding: 0 7px; font-variant-numeric: tabular-nums; }
+  .pmembers { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 10px 10px; }
+  .phint { flex: 1 1 100%; font-size: 12.5px; color: var(--muted); }
+  .mchip { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .mchip.kid { border-color: var(--gold); }
+  .pcard.lift, .pchip.lift, .mchip.lift { opacity: .35; }
+
+  @media (min-width: 960px) {
+    .wrap.tables-view { max-width: 1180px; }
+    .tview { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+    #bench { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+    #bench-toggle { display: none; }
+  }
+  @media (max-width: 959.98px) {
+    .wrap.tables-view { padding-bottom: 0; }
+    #bench { position: sticky; bottom: 0; z-index: 5; margin: 18px -16px 0; max-height: 42vh; overflow: auto;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--surface);
+      border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(20,12,14,.10); }
+    #bench.collapsed .bench-head { margin-bottom: 0; }
+    #bench.collapsed .blist { display: none; }
+  }
+
+  /* ---- drag & drop ---- */
+  body.dragging, body.dragging * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+  .dragghost { position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none; display: flex; gap: 10px; align-items: flex-start;
+    max-width: min(290px, calc(100vw - 16px)); padding: 9px 13px 9px 9px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); box-shadow: 0 12px 30px rgba(20,12,14,.24); font-size: 13px; line-height: 1.3; }
+  .dragghost .gn { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 16px; font-weight: 600; background: hsl(var(--h) var(--on-s) var(--on-l)); color: var(--on-ink); }
+  .dragghost b { display: block; font-size: 14.5px; font-weight: 600; overflow-wrap: anywhere; }
+  .dragghost .gs { display: block; color: var(--muted); }
+  .dragghost .st { display: block; margin-top: 3px; font-weight: 600; color: var(--muted); }
+  .dragghost .st.ok { color: var(--sage); }
+  .dragghost .st.bad { color: var(--claret); }
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+    z-index: 60; max-width: calc(100vw - 32px); padding: 10px 14px; border-radius: 10px; background: var(--ink); color: var(--paper);
+    font-size: 14px; box-shadow: 0 8px 24px rgba(20,12,14,.25); }
 
   .scrim { position: fixed; inset: 0; background: rgba(20,12,14,.55); display: grid; place-items: end center; padding: 12px; z-index: 20; }
   .sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; width: 100%; max-width: 560px;
@@ -201,15 +285,25 @@
       <div class="empty" id="empty" hidden></div>
     </section>
 
-    <section id="view-tables" hidden>
-      <div class="toolbar">
-        <button class="btn" id="add10">Add table · 10 seats</button>
-        <button class="btn" id="add12">Add table · 12 seats</button>
-        <button class="btn accent" id="autoseat">Seat everyone left</button>
+    <section id="view-tables" class="tview" hidden>
+      <div class="tmain">
+        <div class="toolbar">
+          <button class="btn" id="add10">Add table · 10 seats</button>
+          <button class="btn" id="add12">Add table · 12 seats</button>
+          <button class="btn accent" id="autoseat">Seat everyone left</button>
+        </div>
+        <p class="howto">Drag a party onto a seat and everyone with them comes along. Drag one seat to move just that person,
+          or a name under a table to move that group. On a phone, press and hold before dragging. Gold ring = kid or infant.</p>
+        <div id="tables" class="tgrid"></div>
       </div>
-      <div id="tables"></div>
-      <h2 style="font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:23px;margin:22px 0 10px">Still standing</h2>
-      <ul class="list" id="unseated"></ul>
+      <aside id="bench" aria-label="Still standing">
+        <div class="bench-head">
+          <h2>Still standing</h2>
+          <span id="bench-count"></span>
+          <button class="ghost" type="button" id="bench-toggle">Hide</button>
+        </div>
+        <div id="bench-list" class="blist"></div>
+      </aside>
     </section>
   </div>
 </div>
@@ -419,9 +513,17 @@ async function startCloud() {
 
 /* ---------------- people helpers ---------------- */
 const fullName = (g) => (g.first + ' ' + (g.last || '')).trim();
+// "Ivan (Boki) Borilovic" → IB; a one-word companion borrows the party's surname: "Lucija" of Garic → LG.
+function initials(name, last) {
+  const w = name.replace(/\(.*?\)/g, ' ').trim().split(/\s+/).filter(Boolean);
+  if (!w.length) return '?';
+  if (w.length > 1) return (w[0][0] + w[w.length - 1][0]).toUpperCase();
+  return last ? (w[0][0] + last[0]).toUpperCase() : w[0][0].toUpperCase() + (w[0][1] || '');
+}
 function party(g) {
-  const out = [{ id: g.id, name: fullName(g), age: g.age || 'adult', main: true, guest: g }];
-  (g.companions || []).forEach((c, i) => out.push({ id: c.id, name: c.name || (fullName(g) + ' +' + (i + 1)), age: c.age || 'adult', main: false, guest: g }));
+  const out = [{ id: g.id, name: fullName(g), ini: initials(fullName(g)), age: g.age || 'adult', main: true, guest: g }];
+  (g.companions || []).forEach((c, i) => out.push({ id: c.id, name: c.name || (fullName(g) + ' +' + (i + 1)),
+    ini: c.name ? initials(c.name, g.last) : '+' + (i + 1), age: c.age || 'adult', main: false, guest: g }));
   return out;
 }
 const allPeople = () => guests.flatMap(party);
@@ -432,28 +534,33 @@ function seatOf(pid) {
 }
 function unseatPerson(pid) { tables.forEach(t => { const i = t.seats.indexOf(pid); if (i > -1) t.seats[i] = null; }); }
 const freeCount = (t) => t.seats.filter(s => !s).length;
-function findRun(t, n) {
-  const s = t.seats, len = s.length;
-  for (let start = 0; start < len; start++) {
-    const idx = [];
-    let ok = true;
-    for (let k = 0; k < n; k++) { const j = (start + k) % len; if (s[j]) { ok = false; break; } idx.push(j); }
-    if (ok) return idx;
+// Seat indexes at table t for these people: clockwise from `start`, or from the first run
+// where they fit side by side. Seats the movers already hold count as free. null = no room.
+function placeIdx(t, ids, start) {
+  const n = t.seats.length, m = ids.length;
+  const free = j => !t.seats[j] || ids.includes(t.seats[j]);
+  if (start == null) {
+    start = 0;
+    for (let s = 0; s < n; s++) {
+      let k = 0;
+      while (k < m && free((s + k) % n)) k++;
+      if (k === m) { start = s; break; }
+    }
   }
-  return null;
+  const out = [];
+  for (let k = 0; k < n && out.length < m; k++) { const j = (start + k) % n; if (free(j)) out.push(j); }
+  return out.length === m ? out : null;
 }
-function freeSeats(t, n) {
-  const idx = [];
-  for (let i = 0; i < t.seats.length && idx.length < n; i++) if (!t.seats[i]) idx.push(i);
-  return idx.length === n ? idx : null;
+function seatIds(t, ids, idx) {
+  ids.forEach(unseatPerson);
+  idx.forEach((j, k) => { t.seats[j] = ids[k]; });
 }
 function seatParty(g, t) {
-  const people = party(g).filter(p => !seatOf(p.id));
-  if (!people.length) return true;
-  const idx = findRun(t, people.length) || freeSeats(t, people.length);
-  if (!idx) return false;
-  idx.forEach((i, k) => { t.seats[i] = people[k].id; });
-  return true;
+  const ids = party(g).filter(p => !seatOf(p.id)).map(p => p.id);
+  if (!ids.length) return true;
+  const idx = placeIdx(t, ids, null);
+  if (idx) seatIds(t, ids, idx);
+  return !!idx;
 }
 
 /* ---------------- form ---------------- */
@@ -524,6 +631,7 @@ function setView(v) {
   $('view-tables').hidden = v !== 'tables';
   $('tab-guests').setAttribute('aria-pressed', String(v === 'guests'));
   $('tab-tables').setAttribute('aria-pressed', String(v === 'tables'));
+  document.querySelector('.wrap').classList.toggle('tables-view', v === 'tables');
   render();
 }
 $('tab-guests').addEventListener('click', () => setView('guests'));
@@ -564,6 +672,18 @@ function option(parent, label, sub, fn) {
 }
 
 /* ---------------- tables ---------------- */
+function make(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  if (tag === 'button') e.type = 'button';
+  return e;
+}
+function partyHues() {
+  const h = {};
+  guests.forEach((g, i) => { h[g.id] = Math.round(i * 137.508) % 360; });
+  return h;
+}
 function addTable(size) {
   tables.push({ id: uid(), name: 'Table ' + (tables.length + 1), size, seats: new Array(size).fill(null) });
   save(); render();
@@ -581,7 +701,13 @@ $('autoseat').addEventListener('click', () => {
   save(); render();
   if (left) alert(left + ' parties did not fit. Add more tables and press again.');
 });
+let benchCollapsed = false;
+$('bench-toggle').addEventListener('click', () => { benchCollapsed = !benchCollapsed; render(); });
 
+function renameTable(t) {
+  const v = prompt('Table name', t.name);
+  if (v !== null && v.trim()) { t.name = v.trim(); save(); render(); }
+}
 function pickPersonForSeat(t, i) {
   sheet('Seat ' + (i + 1) + ' · ' + t.name, (box, close) => {
     let any = false;
@@ -603,8 +729,7 @@ function seatMenu(t, i, p) {
     tables.forEach(ot => {
       if (ot.id === t.id || !freeCount(ot)) return;
       option(box, 'Move to ' + ot.name, freeCount(ot) + ' seats free', () => {
-        const free = freeSeats(ot, 1);
-        t.seats[i] = null; ot.seats[free[0]] = p.id; save(); close(); render();
+        seatIds(ot, [p.id], placeIdx(ot, [p.id], null)); save(); close(); render();
       });
     });
   });
@@ -621,94 +746,346 @@ function seatPartyMenu(g) {
     if (!any) { const e = document.createElement('p'); e.textContent = n ? 'No table has ' + n + ' free seats. Add another table.' : 'Already seated.'; box.appendChild(e); }
   });
 }
+function groupMenu(label, t, ids) {
+  sheet(label + ' · ' + t.name, (box, close) => {
+    option(box, ids.length > 1 ? 'Take all ' + ids.length + ' off this table' : 'Take off this table', 'Back to Still standing', () => {
+      ids.forEach(unseatPerson); save(); close(); render();
+    });
+    tables.forEach(ot => {
+      if (ot.id === t.id) return;
+      const idx = placeIdx(ot, ids, null);
+      if (!idx) return;
+      option(box, 'Move to ' + ot.name, freeCount(ot) + ' of ' + ot.size + ' seats free', () => {
+        seatIds(ot, ids, idx); save(); close(); render();
+      });
+    });
+  });
+}
 
-function renderTables() {
+/* ---------------- drag & drop ----------------
+   Mouse: drag after moving 8px. Touch/pen: press and hold 300ms, so a normal swipe still scrolls.
+   A payload says who moves: { ids, title, hue, seated, from?: {t, i}, lift: [elements], note } */
+let drag = null, suppressUntil = 0, toastTimer = 0;
+const narrowMQ = matchMedia('(max-width: 959.98px)');
+
+function draggable(el, payload) {
+  el.addEventListener('contextmenu', e => e.preventDefault());
+  el.addEventListener('pointerdown', e => {
+    if (drag || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const touch = e.pointerType !== 'mouse', pid = e.pointerId, sx = e.clientX, sy = e.clientY;
+    let x = sx, y = sy, timer = 0;
+    const off = () => {
+      clearTimeout(timer);
+      removeEventListener('pointermove', move);
+      removeEventListener('pointerup', off);
+      removeEventListener('pointercancel', off);
+    };
+    const go = () => { off(); startDrag(payload(), x, y, touch, pid); };
+    function move(ev) {
+      if (ev.pointerId !== pid) return;
+      x = ev.clientX; y = ev.clientY;
+      if (Math.hypot(x - sx, y - sy) > 8) { if (touch) off(); else go(); }
+    }
+    addEventListener('pointermove', move);
+    addEventListener('pointerup', off);
+    addEventListener('pointercancel', off);
+    if (touch) timer = setTimeout(go, 300);
+  });
+}
+
+function startDrag(p, x, y, touch, pid) {
   const idx = personIndex();
+  const ppl = p.ids.map(id => idx[id]).filter(Boolean);
+  if (!ppl.length) return;
+  const n = ppl.length;
+  const kids = ppl.filter(q => q.age === 'kid').length, inf = ppl.filter(q => q.age === 'infant').length;
+  const bits = [n + (n === 1 ? ' person' : ' people') + ' · takes ' + n + (n === 1 ? ' seat' : ' seats')];
+  if (kids) bits.push(kids + (kids === 1 ? ' kid' : ' kids'));
+  if (inf) bits.push(inf + (inf === 1 ? ' infant' : ' infants'));
+  if (p.note) bits.push(p.note);
+  const ghost = make('div', 'dragghost'), body = make('span'), st = make('span', 'st');
+  ghost.style.setProperty('--h', p.hue);
+  body.append(make('b', null, p.title), make('span', 'gs', bits.join(' · ')), st);
+  ghost.append(make('span', 'gn', String(n)), body);
+  document.body.appendChild(ghost);
+  drag = Object.assign(p, { ids: ppl.map(q => q.id), ini: ppl.map(q => q.ini), people: idx, x, y, touch, pid,
+    ghost, st, hit: {}, hitKey: '', marks: [], armTop: false, armBottom: false });
+  document.body.classList.add('dragging');
+  p.lift.forEach(e => e.classList.add('lift'));
+  addEventListener('pointermove', onDragMove);
+  addEventListener('pointerup', onDragUp);
+  addEventListener('pointercancel', onDragCancel);
+  if (touch && navigator.vibrate) navigator.vibrate(10);
+  moveDrag(x, y);
+  drag.raf = requestAnimationFrame(autoScroll);
+}
+function onDragMove(e) { if (drag && e.pointerId === drag.pid) moveDrag(e.clientX, e.clientY); }
+function onDragUp(e) { if (drag && e.pointerId === drag.pid) endDrag(true); }
+// On touch the browser may cancel the pointer even though we block scrolling; touchend finishes those drags.
+function onDragCancel(e) { if (drag && e.pointerId === drag.pid && !drag.touch) endDrag(false); }
+
+function moveDrag(x, y) {
+  const d = drag;
+  d.x = x; d.y = y;
+  const gw = d.ghost.offsetWidth, gh = d.ghost.offsetHeight;
+  let gx = d.touch ? x - gw / 2 : x + 16, gy = d.touch ? y - gh - 36 : y + 16;
+  gx = Math.max(8, Math.min(innerWidth - gw - 8, gx));
+  gy = Math.max(8, Math.min(innerHeight - gh - 8, gy));
+  d.ghost.style.transform = 'translate(' + gx + 'px,' + gy + 'px)';
+
+  const el = document.elementFromPoint(x, y);
+  const seatEl = el && el.closest('.seat'), tEl = el && el.closest('.rtable'), benchEl = el && el.closest('#bench');
+  const hit = { t: tEl ? tEl.dataset.t : null, i: seatEl && tEl ? +seatEl.dataset.i : null, bench: !!benchEl };
+  const key = hit.t + '|' + hit.i + '|' + hit.bench;
+  if (key === d.hitKey) return;
+  d.hitKey = key; d.hit = hit;
+  showPlan(d, planDrop(d, hit), tEl, benchEl);
+}
+
+// What a drop on `hit` would do, worked out from the current data (also re-run at drop time).
+function planDrop(d, hit) {
+  const n = d.ids.length;
+  if (hit.bench) return d.seated ? { type: 'unseat', text: n > 1 ? 'All ' + n + ' back to Still standing' : 'Back to Still standing' } : null;
+  const t = hit.t && tables.find(x => x.id === hit.t);
+  if (!t) return null;
+  if (hit.i != null) {
+    const occ = t.seats[hit.i];
+    if (n === 1 && occ === d.ids[0]) return null;
+    if (n === 1 && d.from && occ && !d.ids.includes(occ)) {
+      const other = d.people[occ];
+      return { type: 'swap', t, i: hit.i, other: occ, text: '⇄ Swap with ' + (other ? other.name : 'that guest') };
+    }
+  } else if (d.ids.every(id => t.seats.includes(id))) return null;
+  const idx = placeIdx(t, d.ids, hit.i);
+  if (!idx) {
+    const free = t.seats.filter(s => !s || d.ids.includes(s)).length;
+    return { type: 'nofit', t, text: 'Only ' + free + ' free at ' + t.name + ' — needs ' + n };
+  }
+  return { type: 'seat', t, idx, text: '→ ' + t.name + ' · seat' + (n > 1 ? 's ' : ' ') + idx.map(j => j + 1).join(', ') };
+}
+
+function clearMarks(d) {
+  d.marks.forEach(m => { m.el.classList.remove(m.cls); if (m.text != null) m.el.textContent = m.text; });
+  d.marks = [];
+}
+function showPlan(d, plan, tEl, benchEl) {
+  clearMarks(d);
+  const mark = (el, cls, text) => {
+    if (!el) return;
+    d.marks.push({ el, cls, text: text != null ? el.textContent : null });
+    el.classList.add(cls);
+    if (text != null) el.textContent = text;
+  };
+  if (plan && plan.type === 'unseat') mark(benchEl, 'over');
+  else if (plan) {
+    mark(tEl, plan.type === 'nofit' ? 'nofit' : 'over');
+    const seats = tEl.querySelectorAll('.seat');
+    if (plan.type === 'seat') plan.idx.forEach((j, k) => mark(seats[j], 'target', d.ini[k]));
+    if (plan.type === 'swap') mark(seats[plan.i], 'swap');
+  }
+  d.st.textContent = plan ? plan.text : d.seated ? 'Drop on a seat, or on Still standing to unseat' : 'Drop on a table or a seat';
+  d.st.className = 'st' + (plan ? (plan.type === 'nofit' ? ' bad' : ' ok') : '');
+}
+
+function applyPlan(d, plan) {
+  if (plan.type === 'unseat') d.ids.forEach(unseatPerson);
+  else if (plan.type === 'swap') {
+    const src = tables.find(x => x.id === d.from.t);
+    if (!src || src.seats[d.from.i] !== d.ids[0]) return;
+    src.seats[d.from.i] = plan.other;
+    plan.t.seats[plan.i] = d.ids[0];
+  } else seatIds(plan.t, d.ids, plan.idx);
+  save();
+}
+
+function endDrag(drop) {
+  const d = drag;
+  if (!d) return;
+  drag = null;
+  cancelAnimationFrame(d.raf);
+  removeEventListener('pointermove', onDragMove);
+  removeEventListener('pointerup', onDragUp);
+  removeEventListener('pointercancel', onDragCancel);
+  clearMarks(d);
+  d.lift.forEach(e => e.classList.remove('lift'));
+  d.ghost.remove();
+  document.body.classList.remove('dragging');
+  suppressUntil = Date.now() + 400;
+  if (drop) {
+    const live = personIndex();
+    d.ids = d.ids.filter(id => live[id]);
+    const plan = d.ids.length ? planDrop(d, d.hit) : null;
+    if (plan && plan.type === 'nofit') toast(plan.text);
+    else if (plan) applyPlan(d, plan);
+  }
+  render();
+}
+
+// Scroll the page while dragging near the top or bottom edge. On phones the bottom edge is the
+// top of the Still standing tray. Each edge only arms once the pointer has been away from it,
+// so dragging up out of the tray doesn't scroll the page down.
+function autoScroll() {
+  const d = drag;
+  if (!d) return;
+  let bottom = innerHeight;
+  if (narrowMQ.matches) {
+    const b = $('bench').getBoundingClientRect().top;
+    if (b > 0 && b < innerHeight) bottom = b;
+  }
+  const Z = 60;
+  if (d.y > Z) d.armTop = true;
+  if (d.y < bottom - Z) d.armBottom = true;
+  let dy = 0;
+  if (d.armTop && d.y < Z) dy = -(Z - d.y);
+  else if (d.armBottom && d.y > bottom - Z && d.y < bottom) dy = d.y - (bottom - Z);
+  if (dy) {
+    const before = scrollY;
+    scrollBy(0, Math.round(dy / 3));
+    if (scrollY !== before) { d.hitKey = ''; moveDrag(d.x, d.y); }
+  }
+  d.raf = requestAnimationFrame(autoScroll);
+}
+
+// Block page scrolling once a touch drag has started (must be non-passive), and finish touch drags.
+$('view-tables').addEventListener('touchmove', e => {
+  if (!drag) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  if (t) moveDrag(t.clientX, t.clientY);
+}, { passive: false });
+$('view-tables').addEventListener('touchend', () => { if (drag && drag.touch) endDrag(true); });
+$('view-tables').addEventListener('touchcancel', () => { if (drag && drag.touch) endDrag(false); });
+addEventListener('keydown', e => { if (drag && e.key === 'Escape') endDrag(false); });
+addEventListener('blur', () => endDrag(false));
+// A drag ends with a click on whatever was under it; don't let that open a menu.
+document.addEventListener('click', e => {
+  if (Date.now() < suppressUntil) { e.stopPropagation(); e.preventDefault(); }
+}, true);
+
+function toast(msg) {
+  let t = $('toast');
+  if (!t) { t = make('div', 'toast'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.textContent = msg;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 2600);
+}
+
+/* ---------------- tables render ---------------- */
+function renderTables() {
+  const idx = personIndex(), hue = partyHues();
   const wrapEl = $('tables');
   wrapEl.innerHTML = '';
-  if (!tables.length) {
-    const e = document.createElement('div');
-    e.className = 'empty';
-    e.textContent = 'No tables yet. Add one above, then seat people.';
-    wrapEl.appendChild(e);
-  }
-  tables.forEach(t => {
-    const box = document.createElement('div');
-    box.className = 'table';
-    const head = document.createElement('div');
-    head.className = 'thead';
-    const nm = document.createElement('div');
-    nm.className = 'tname';
-    nm.textContent = t.name;
-    nm.title = 'Tap to rename';
-    nm.addEventListener('click', () => {
-      const v = prompt('Table name', t.name);
-      if (v !== null && v.trim()) { t.name = v.trim(); save(); render(); }
-    });
-    const meta = document.createElement('span');
-    meta.className = 'tmeta';
-    meta.textContent = (t.size - freeCount(t)) + '/' + t.size;
-    const x = document.createElement('button');
-    x.className = 'x'; x.type = 'button'; x.textContent = 'Delete';
-    x.addEventListener('click', () => {
-      if (!confirm('Delete ' + t.name + '? Everyone at it goes back to the unseated list.')) return;
-      tables = tables.filter(o => o.id !== t.id); save(); render();
-    });
-    head.append(nm, meta, x);
-    box.appendChild(head);
+  if (!tables.length) wrapEl.appendChild(make('div', 'empty', 'No tables yet. Add one above, then drag guests onto the seats.'));
 
-    const grid = document.createElement('div');
-    grid.className = 'seats';
+  tables.forEach(t => {
+    const n = t.seats.length;
+    const card = make('div', 'rtable');
+    card.dataset.t = t.id;
+    const rt = make('div', 'rt');
+    const top = make('button', 'rt-top');
+    top.title = 'Rename table';
+    top.append(make('span', 'tn', t.name), make('span', 'tc', (n - freeCount(t)) + ' / ' + n));
+    top.addEventListener('click', () => renameTable(t));
+    rt.appendChild(top);
+
+    const groups = [], byGuest = {};
     t.seats.forEach((pid, i) => {
       let p = pid ? idx[pid] : null;
       if (pid && !p) { t.seats[i] = null; p = null; }
-      const b = document.createElement('button');
-      b.className = 'seat' + (p ? '' : ' free');
-      b.type = 'button';
-      const no = document.createElement('span'); no.className = 'no'; no.textContent = i + 1;
-      const pn = document.createElement('span'); pn.className = 'pname'; pn.textContent = p ? p.name : 'empty';
-      b.append(no, pn);
-      if (p && p.age !== 'adult') {
-        const tg = document.createElement('span'); tg.className = 'tag';
-        tg.textContent = p.age === 'infant' ? 'infant' : 'kid';
-        b.appendChild(tg);
+      const a = i / n * 2 * Math.PI;
+      const s = make('button', 'seat' + (p ? ' on' + (p.age !== 'adult' ? ' kid' : '') : ''), p ? p.ini : String(i + 1));
+      s.dataset.i = i;
+      s.style.left = (50 + 41 * Math.sin(a)).toFixed(2) + '%';
+      s.style.top = (50 - 41 * Math.cos(a)).toFixed(2) + '%';
+      const label = 'Seat ' + (i + 1) + ' · ' + (p ? p.name + (p.age !== 'adult' ? ' (' + p.age + ')' : '') : 'empty');
+      s.title = label;
+      s.setAttribute('aria-label', label);
+      if (p) {
+        s.style.setProperty('--h', hue[p.guest.id]);
+        draggable(s, () => ({ ids: [p.id], title: p.name, hue: hue[p.guest.id], seated: true, from: { t: t.id, i },
+          lift: [s], note: p.main ? '' : 'with ' + fullName(p.guest) }));
+        if (!byGuest[p.guest.id]) groups.push(byGuest[p.guest.id] = { g: p.guest, people: [], seats: [] });
+        byGuest[p.guest.id].people.push(p);
+        byGuest[p.guest.id].seats.push(s);
       }
-      b.addEventListener('click', () => p ? seatMenu(t, i, p) : pickPersonForSeat(t, i));
-      grid.appendChild(b);
+      s.addEventListener('click', () => p ? seatMenu(t, i, p) : pickPersonForSeat(t, i));
+      rt.appendChild(s);
     });
-    box.appendChild(grid);
-    wrapEl.appendChild(box);
+    card.appendChild(rt);
+
+    // One chip per party at this table: drag it to move that whole group, tap for options.
+    if (groups.length) {
+      const chips = make('div', 'rt-parties');
+      groups.forEach(gr => {
+        const ids = gr.people.map(p => p.id);
+        const label = gr.people.some(p => p.main)
+          ? fullName(gr.g) + (ids.length > 1 ? ' +' + (ids.length - 1) : '')
+          : gr.people.map(p => p.name).join(', ');
+        const c = make('button', 'pchip');
+        c.style.setProperty('--h', hue[gr.g.id]);
+        c.title = gr.people.map(p => p.name).join(', ');
+        c.append(make('span', 'dot'), make('span', null, label));
+        draggable(c, () => ({ ids, title: label, hue: hue[gr.g.id], seated: true, lift: [c].concat(gr.seats), note: 'from ' + t.name }));
+        c.addEventListener('click', () => groupMenu(label, t, ids));
+        chips.appendChild(c);
+      });
+      card.appendChild(chips);
+    }
+
+    const foot = make('div', 'rt-foot');
+    const x = make('button', 'x', 'Delete table');
+    x.addEventListener('click', () => {
+      if (!confirm('Delete ' + t.name + '? Everyone at it goes back to Still standing.')) return;
+      tables = tables.filter(o => o.id !== t.id); save(); render();
+    });
+    foot.appendChild(x);
+    card.appendChild(foot);
+    wrapEl.appendChild(card);
   });
 
-  const ul = $('unseated');
-  ul.innerHTML = '';
-  let none = true;
+  const list = $('bench-list');
+  list.innerHTML = '';
+  let ppl = 0, parties = 0;
   guests.forEach(g => {
-    const left = party(g).filter(p => !seatOf(p.id));
+    const all = party(g), left = all.filter(p => !seatOf(p.id));
     if (!left.length) return;
-    none = false;
-    const li = document.createElement('li');
-    li.className = 'guest';
-    const row = document.createElement('div');
-    row.className = 'row';
-    const who = document.createElement('span');
-    who.className = 'who';
-    who.innerHTML = '<span class="name"></span><span class="sub"></span>';
-    who.querySelector('.name').textContent = fullName(g);
-    who.querySelector('.sub').textContent = left.length + (left.length === 1 ? ' person' : ' people') + ' to seat';
-    const b = document.createElement('button');
-    b.className = 'btn'; b.type = 'button'; b.textContent = 'Seat';
-    b.addEventListener('click', () => seatPartyMenu(g));
-    row.append(who, b);
-    li.appendChild(row);
-    ul.appendChild(li);
+    ppl += left.length; parties++;
+    const isOpen = !!open['b' + g.id];
+    const label = left.some(p => p.main) ? fullName(g) : left.map(p => p.name).join(', ');
+    const card = make('div', 'pcard' + (isOpen ? ' open' : ''));
+    card.style.setProperty('--h', hue[g.id]);
+    const head = make('button', 'phead');
+    head.setAttribute('aria-expanded', String(isOpen));
+    head.title = left.map(p => p.name).join(', ');
+    head.append(make('span', 'dot'), make('span', 'pnm', label));
+    if (left.length > 1) head.appendChild(make('span', 'pct', String(left.length)));
+    head.addEventListener('click', () => { open['b' + g.id] = !isOpen; render(); });
+    draggable(head, () => ({ ids: left.map(p => p.id), title: label, hue: hue[g.id], seated: false, lift: [card],
+      note: left.length < all.length ? (all.length - left.length) + ' already seated' : (left.some(p => p.main) ? '' : 'with ' + fullName(g)) }));
+    card.appendChild(head);
+    if (isOpen) {
+      const mem = make('div', 'pmembers');
+      if (left.length > 1) {
+        mem.appendChild(make('span', 'phint', 'Drag a name to seat just that person:'));
+        left.forEach(p => {
+          const c = make('button', 'mchip' + (p.age !== 'adult' ? ' kid' : ''), p.name);
+          draggable(c, () => ({ ids: [p.id], title: p.name, hue: hue[g.id], seated: false, lift: [c],
+            note: p.main ? '' : 'with ' + fullName(g) }));
+          mem.appendChild(c);
+        });
+      }
+      const st = make('button', 'ghost', 'Seat at a table…');
+      st.addEventListener('click', () => seatPartyMenu(g));
+      mem.appendChild(st);
+      card.appendChild(mem);
+    }
+    list.appendChild(card);
   });
-  if (none) {
-    const li = document.createElement('li');
-    li.className = 'empty';
-    li.textContent = tables.length ? 'Everybody has a seat.' : 'Add a table to start seating.';
-    ul.appendChild(li);
-  }
+  if (!parties) list.appendChild(make('div', 'empty', tables.length ? 'Everybody has a seat.' : 'Add a table to start seating.'));
+  $('bench-count').textContent = ppl ? ppl + (ppl === 1 ? ' person' : ' people') : '';
+  $('bench').classList.toggle('collapsed', benchCollapsed);
+  $('bench-toggle').textContent = benchCollapsed ? 'Show' : 'Hide';
 }
 
 /* ---------------- guests ---------------- */
@@ -834,6 +1211,7 @@ function renderGuests() {
 }
 
 function render() {
+  if (drag) return; // endDrag() re-renders, so a remote update mid-drag doesn't pull the DOM out from under it
   const people = allPeople();
   const called = guests.filter(g => g.called).length;
   $('s-called').textContent = called;
