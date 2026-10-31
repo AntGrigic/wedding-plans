@@ -144,11 +144,11 @@
     text-decoration: underline; padding: 4px 0; }
 
   /* ---- seating: people still to seat ---- */
-  #bench .bench-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
-  #bench h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 23px; margin: 0; flex: 1 1 auto; }
-  #bench-count { font-size: 13px; color: var(--muted); }
-  #bench .ghost { padding: 0; font-size: 13px; }
-  #bench.over { box-shadow: inset 0 0 0 2px var(--sage); }
+  .bench .bench-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .bench h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 23px; margin: 0; flex: 1 1 auto; }
+  .bench-count { font-size: 13px; color: var(--muted); }
+  .bench .ghost { padding: 0; font-size: 13px; }
+  .bench.over { box-shadow: inset 0 0 0 2px var(--sage); }
   .blist { display: flex; flex-wrap: wrap; gap: 6px; }
   .blist > .empty { flex: 1 1 100%; }
   .pcard { max-width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); transition: opacity .12s; }
@@ -166,21 +166,55 @@
     background: var(--surface); color: var(--ink); cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
   .mchip.kid { border-color: var(--gold); }
   .pcard.lift, .pchip.lift, .mchip.lift { opacity: .35; }
+  .ktag { flex: 0 0 auto; font-size: 11.5px; color: var(--gold); white-space: nowrap; }
+  .bench-search { width: 100%; margin-bottom: 10px; font-size: 14px !important; padding: 8px 11px !important; }
+
+  /* ---- rooms ---- */
+  .rgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .rgrid > .empty { grid-column: 1 / -1; }
+  .room { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-width: 0;
+    display: flex; flex-direction: column; gap: 9px; transition: border-color .12s, box-shadow .12s; }
+  .room.over { border-color: var(--sage); box-shadow: 0 0 0 1px var(--sage); }
+  .room.nofit { border-color: var(--claret); box-shadow: 0 0 0 1px var(--claret); }
+  .rhead { display: flex; align-items: baseline; gap: 8px; }
+  .rname { flex: 1 1 auto; min-width: 0; text-align: left; font-family: "Instrument Serif", Georgia, serif; font-size: 22px;
+    line-height: 1.1; background: none; border: 0; padding: 0; color: var(--ink); cursor: pointer; overflow-wrap: anywhere; }
+  .rmeta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .room.full .rmeta { color: var(--sage); }
+  .beds { display: grid; gap: 6px; }
+  .bed { position: relative; display: flex; align-items: center; gap: 9px; width: 100%; min-height: 46px; padding: 7px 10px 7px 16px;
+    font: inherit; font-size: 14.5px; text-align: left; color: var(--muted); background: var(--paper); cursor: pointer;
+    border: 1.5px dashed var(--line); border-radius: 10px; transition: opacity .12s, box-shadow .12s;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .bed::before { content: ""; position: absolute; left: 5px; top: 9px; bottom: 9px; width: 5px; border-radius: 3px; background: var(--line); }
+  .bed.on { border: 1px solid var(--line); color: var(--ink); background: var(--surface); cursor: grab; }
+  .bed.on::before { background: hsl(var(--h) var(--on-s) var(--on-l)); }
+  .bed .bi { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px;
+    font-weight: 600; background: hsl(var(--h) var(--on-s) var(--on-l)); color: var(--on-ink); }
+  .bed .bn { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  .bed.lift { opacity: .3; }
+  .bed.target { opacity: 1; border: 2px solid var(--sage); color: var(--sage); background: color-mix(in srgb, var(--sage) 14%, var(--surface)); }
+  .bed.swap { opacity: 1; box-shadow: 0 0 0 3px var(--sage); }
+  .cots { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: var(--muted);
+    border-radius: 10px; padding: 2px 0; }
+  .cots.target { outline: 2px solid var(--sage); outline-offset: 3px; color: var(--sage); }
+  .rsum { font-size: 12.5px; color: var(--muted); }
+  .room .rt-foot { justify-content: space-between; margin-top: 0; }
 
   @media (min-width: 960px) {
     .wrap.tables-view { max-width: 1180px; }
     .tview { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
-    #bench { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; background: var(--surface);
+    .bench { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; background: var(--surface);
       border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
-    #bench-toggle { display: none; }
+    .bench-toggle { display: none; }
   }
   @media (max-width: 959.98px) {
     .wrap.tables-view { padding-bottom: 0; }
-    #bench { position: sticky; bottom: 0; z-index: 5; margin: 18px -16px 0; max-height: 42vh; overflow: auto;
+    .bench { position: sticky; bottom: 0; z-index: 5; margin: 18px -16px 0; max-height: 42vh; overflow: auto;
       padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--surface);
       border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(20,12,14,.10); }
-    #bench.collapsed .bench-head { margin-bottom: 0; }
-    #bench.collapsed .blist { display: none; }
+    .bench.collapsed .bench-head { margin-bottom: 0; }
+    .bench.collapsed .blist, .bench.collapsed .bench-search { display: none; }
   }
 
   /* ---- drag & drop ---- */
@@ -246,13 +280,15 @@
       <span><strong id="s-heads">0</strong> people</span>
       <span><strong id="s-kids">0</strong> kids · <strong id="s-inf">0</strong> infants</span>
       <span><strong id="s-seated">0</strong> seated</span>
+      <span><strong id="s-roomed">0</strong> in rooms</span>
     </div>
     <div class="meter"><span id="bar"></span></div>
 
     <div class="tabs">
       <button id="tab-guests" aria-pressed="true">Guests</button>
       <button id="tab-tables" aria-pressed="false">Tables</button>
-      <button id="btn-print">Print / PDF</button>
+      <button id="tab-rooms" aria-pressed="false">Rooms</button>
+      <button id="btn-print">Print</button>
     </div>
 
     <section id="view-guests">
@@ -296,13 +332,36 @@
           or a name under a table to move that group. On a phone, press and hold before dragging. Gold ring = kid or infant.</p>
         <div id="tables" class="tgrid"></div>
       </div>
-      <aside id="bench" aria-label="Still standing">
+      <aside id="bench" class="bench" aria-label="Still standing">
         <div class="bench-head">
           <h2>Still standing</h2>
-          <span id="bench-count"></span>
-          <button class="ghost" type="button" id="bench-toggle">Hide</button>
+          <span id="bench-count" class="bench-count"></span>
+          <button class="ghost bench-toggle" type="button" id="bench-toggle">Hide</button>
         </div>
         <div id="bench-list" class="blist"></div>
+      </aside>
+    </section>
+
+    <section id="view-rooms" class="tview" hidden>
+      <div class="tmain">
+        <div class="toolbar">
+          <button class="btn" id="addroom1">Add room · 1 bed</button>
+          <button class="btn" id="addroom2">Add room · 2 beds</button>
+          <button class="btn" id="addroom3">Add room · 3 beds</button>
+        </div>
+        <p class="howto">Drag a party onto a room and everyone with them moves in. Drag one bed to move just that person;
+          drop it on someone else's bed to swap. Infants (1–3) sleep in a baby cot, so they don't use a bed.
+          Tap a room's name to rename it, change the beds or delete it.</p>
+        <div id="rooms" class="rgrid"></div>
+      </div>
+      <aside id="rbench" class="bench" aria-label="Needs a room">
+        <div class="bench-head">
+          <h2>Needs a room</h2>
+          <span id="rbench-count" class="bench-count"></span>
+          <button class="ghost bench-toggle" type="button" id="rbench-toggle">Hide</button>
+        </div>
+        <input type="search" id="rsearch" class="bench-search" placeholder="Find a guest">
+        <div id="rbench-list" class="blist"></div>
       </aside>
     </section>
   </div>
@@ -360,8 +419,8 @@ const SEED = [
 ["Tomislav","Hosni",1,""],["Ana","",1,""],["Goran","Hacek",1,""]
 ];
 
-let guests = [], tables = [], filter = 'todo', query = '', editingId = null, open = {}, view = 'guests';
-let mode = 'local', fb = null, planRef = null, last = { g: {}, t: {} };
+let guests = [], tables = [], rooms = [], filter = 'todo', query = '', editingId = null, open = {}, view = 'guests';
+let mode = 'local', fb = null, planRef = null, last = { g: {}, t: {}, r: {} };
 const $ = (id) => document.getElementById(id);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -384,14 +443,16 @@ function seed() {
       companions: names.map((n, i) => { n = n.trim(); return { id: id + '-' + i, name: n, age: guessAge(n) }; }) };
   });
   tables = [];
+  rooms = [];
 }
 
 /* ---------------- storage ---------------- */
 function toMaps() {
-  const g = {}, t = {};
+  const g = {}, t = {}, r = {};
   guests.forEach((x, i) => { g[x.id] = Object.assign(clone(x), { order: i }); });
   tables.forEach((x, i) => { t[x.id] = Object.assign(clone(x), { order: i }); });
-  return { g, t };
+  rooms.forEach((x, i) => { r[x.id] = Object.assign(clone(x), { order: i }); });
+  return { g, t, r };
 }
 function diff(prefix, cur, prev, upd) {
   for (const k in cur) if (stable(cur[k]) !== stable(prev[k])) upd[prefix + '.' + k] = cur[k];
@@ -399,13 +460,14 @@ function diff(prefix, cur, prev, upd) {
 }
 function save() {
   if (mode === 'local') {
-    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ guests, tables })); } catch (e) {}
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ guests, tables, rooms })); } catch (e) {}
     return;
   }
   const cur = toMaps();
   const upd = {};
   diff('guests', cur.g, last.g, upd);
   diff('tables', cur.t, last.t, upd);
+  diff('rooms', cur.r, last.r, upd);
   last = clone(cur);
   if (Object.keys(upd).length) {
     setSync('Saving…');
@@ -425,7 +487,8 @@ function mergeList(arr, map) {
 function applyRemote(data) {
   guests = mergeList(guests, data.guests || {});
   tables = mergeList(tables, data.tables || {});
-  last = { g: clone(data.guests || {}), t: clone(data.tables || {}) };
+  rooms = mergeList(rooms, data.rooms || {});
+  last = { g: clone(data.guests || {}), t: clone(data.tables || {}), r: clone(data.rooms || {}) };
   render();
 }
 
@@ -444,7 +507,7 @@ function startLocal() {
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
     const d = raw ? JSON.parse(raw) : null;
-    if (d && Array.isArray(d.guests)) { guests = d.guests; tables = d.tables || []; } else seed();
+    if (d && Array.isArray(d.guests)) { guests = d.guests; tables = d.tables || []; rooms = d.rooms || []; } else seed();
   } catch (e) { seed(); }
   setSync('Local only — add Firebase config to share');
   showApp();
@@ -477,7 +540,7 @@ async function startCloud() {
   let unsub = null;
   authMod.onAuthStateChanged(auth, user => {
     if (unsub) { unsub(); unsub = null; }
-    guests = []; tables = []; last = { g: {}, t: {} };
+    guests = []; tables = []; rooms = []; last = { g: {}, t: {}, r: {} };
     if (!user) {
       $('who-email').textContent = '';
       $('signout').hidden = true;
@@ -496,7 +559,7 @@ async function startCloud() {
             if (s.exists()) return;
             seed();
             const m = toMaps();
-            tx.set(planRef, { guests: m.g, tables: m.t });
+            tx.set(planRef, { guests: m.g, tables: m.t, rooms: m.r });
           });
         } catch (e) { gate('Could not create the plan', e.message, false); }
         return;
@@ -534,11 +597,27 @@ function seatOf(pid) {
 }
 function unseatPerson(pid) { tables.forEach(t => { const i = t.seats.indexOf(pid); if (i > -1) t.seats[i] = null; }); }
 const freeCount = (t) => t.seats.filter(s => !s).length;
-// Seat indexes at table t for these people: clockwise from `start`, or from the first run
-// where they fit side by side. Seats the movers already hold count as free. null = no room.
-function placeIdx(t, ids, start) {
-  const n = t.seats.length, m = ids.length;
-  const free = j => !t.seats[j] || ids.includes(t.seats[j]);
+function roomOf(pid) {
+  for (const r of rooms) {
+    const i = r.beds.indexOf(pid);
+    if (i > -1) return { room: r, index: i };
+    if ((r.cots || []).includes(pid)) return { room: r, cot: true };
+  }
+  return null;
+}
+function unroomPerson(pid) {
+  rooms.forEach(r => {
+    const i = r.beds.indexOf(pid);
+    if (i > -1) r.beds[i] = null;
+    if (r.cots && r.cots.includes(pid)) r.cots = r.cots.filter(x => x !== pid);
+  });
+}
+const freeBeds = (r) => r.beds.filter(b => !b).length;
+// Indexes in a seat/bed array for these people: clockwise from `start`, or from the first run
+// where they fit side by side. Slots the movers already hold count as free. null = no room.
+function placeIdx(slots, ids, start) {
+  const n = slots.length, m = ids.length;
+  const free = j => !slots[j] || ids.includes(slots[j]);
   if (start == null) {
     start = 0;
     for (let s = 0; s < n; s++) {
@@ -558,7 +637,7 @@ function seatIds(t, ids, idx) {
 function seatParty(g, t) {
   const ids = party(g).filter(p => !seatOf(p.id)).map(p => p.id);
   if (!ids.length) return true;
-  const idx = placeIdx(t, ids, null);
+  const idx = placeIdx(t.seats, ids, null);
   if (idx) seatIds(t, ids, idx);
   return !!idx;
 }
@@ -599,7 +678,7 @@ $('form').addEventListener('submit', e => {
     if (g) {
       g.first = first; g.last = $('last').value.trim();
       const old = g.companions || [];
-      old.slice(names.length).forEach(c => unseatPerson(c.id));
+      old.slice(names.length).forEach(c => { unseatPerson(c.id); unroomPerson(c.id); });
       g.companions = names.map((n, i) => old[i]
         ? { id: old[i].id, name: n, age: old[i].age || 'adult' }
         : { id: g.id + '-' + uid(), name: n, age: guessAge(n) });
@@ -629,13 +708,16 @@ function setView(v) {
   view = v;
   $('view-guests').hidden = v !== 'guests';
   $('view-tables').hidden = v !== 'tables';
+  $('view-rooms').hidden = v !== 'rooms';
   $('tab-guests').setAttribute('aria-pressed', String(v === 'guests'));
   $('tab-tables').setAttribute('aria-pressed', String(v === 'tables'));
-  document.querySelector('.wrap').classList.toggle('tables-view', v === 'tables');
+  $('tab-rooms').setAttribute('aria-pressed', String(v === 'rooms'));
+  document.querySelector('.wrap').classList.toggle('tables-view', v !== 'guests');
   render();
 }
 $('tab-guests').addEventListener('click', () => setView('guests'));
 $('tab-tables').addEventListener('click', () => setView('tables'));
+$('tab-rooms').addEventListener('click', () => setView('rooms'));
 document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
   filter = c.dataset.filter;
   document.querySelectorAll('.chip').forEach(o => o.setAttribute('aria-pressed', String(o === c)));
@@ -701,8 +783,8 @@ $('autoseat').addEventListener('click', () => {
   save(); render();
   if (left) alert(left + ' parties did not fit. Add more tables and press again.');
 });
-let benchCollapsed = false;
-$('bench-toggle').addEventListener('click', () => { benchCollapsed = !benchCollapsed; render(); });
+const benchCollapsed = { tables: false, rooms: false };
+$('bench-toggle').addEventListener('click', () => { benchCollapsed.tables = !benchCollapsed.tables; render(); });
 
 function renameTable(t) {
   const v = prompt('Table name', t.name);
@@ -729,7 +811,7 @@ function seatMenu(t, i, p) {
     tables.forEach(ot => {
       if (ot.id === t.id || !freeCount(ot)) return;
       option(box, 'Move to ' + ot.name, freeCount(ot) + ' seats free', () => {
-        seatIds(ot, [p.id], placeIdx(ot, [p.id], null)); save(); close(); render();
+        seatIds(ot, [p.id], placeIdx(ot.seats, [p.id], null)); save(); close(); render();
       });
     });
   });
@@ -753,7 +835,7 @@ function groupMenu(label, t, ids) {
     });
     tables.forEach(ot => {
       if (ot.id === t.id) return;
-      const idx = placeIdx(ot, ids, null);
+      const idx = placeIdx(ot.seats, ids, null);
       if (!idx) return;
       option(box, 'Move to ' + ot.name, freeCount(ot) + ' of ' + ot.size + ' seats free', () => {
         seatIds(ot, ids, idx); save(); close(); render();
@@ -764,9 +846,18 @@ function groupMenu(label, t, ids) {
 
 /* ---------------- drag & drop ----------------
    Mouse: drag after moving 8px. Touch/pen: press and hold 300ms, so a normal swipe still scrolls.
-   A payload says who moves: { ids, title, hue, seated, from?: {t, i}, lift: [elements], note } */
+   A payload says who moves and where from:
+   { kind: 'tables'|'rooms', ids, title, hue, seated, from?: {c, i}, lift: [elements], note }
+   Containers (tables/rooms) are [data-c] cards, their seats/beds are [data-i] slots. */
+const KIND = {
+  tables: { list: () => tables, slots: c => c.seats, release: unseatPerson, bench: 'bench', home: 'Still standing',
+    one: 'seat', many: 'seats', aim: 'Drop on a table or a seat' },
+  rooms: { list: () => rooms, slots: c => c.beds, release: unroomPerson, bench: 'rbench', home: 'Needs a room',
+    one: 'bed', many: 'beds', aim: 'Drop on a room or a bed' }
+};
 let drag = null, suppressUntil = 0, toastTimer = 0;
 const narrowMQ = matchMedia('(max-width: 959.98px)');
+const plural = (n, one, many) => n + ' ' + (n === 1 ? one : many);
 
 function draggable(el, payload) {
   el.addEventListener('contextmenu', e => e.preventDefault());
@@ -797,18 +888,22 @@ function startDrag(p, x, y, touch, pid) {
   const idx = personIndex();
   const ppl = p.ids.map(id => idx[id]).filter(Boolean);
   if (!ppl.length) return;
+  p.kind = p.kind || 'tables';
   const n = ppl.length;
   const kids = ppl.filter(q => q.age === 'kid').length, inf = ppl.filter(q => q.age === 'infant').length;
-  const bits = [n + (n === 1 ? ' person' : ' people') + ' · takes ' + n + (n === 1 ? ' seat' : ' seats')];
-  if (kids) bits.push(kids + (kids === 1 ? ' kid' : ' kids'));
-  if (inf) bits.push(inf + (inf === 1 ? ' infant' : ' infants'));
+  const bits = [p.kind === 'rooms'
+    ? plural(n, 'person', 'people') + ' · ' + (n - inf ? 'takes ' + plural(n - inf, 'bed', 'beds') : 'no bed') +
+      (inf ? ' + ' + plural(inf, 'cot', 'cots') : '')
+    : plural(n, 'person', 'people') + ' · takes ' + plural(n, 'seat', 'seats')];
+  if (kids) bits.push(plural(kids, 'kid', 'kids'));
+  if (inf) bits.push(plural(inf, 'infant', 'infants'));
   if (p.note) bits.push(p.note);
   const ghost = make('div', 'dragghost'), body = make('span'), st = make('span', 'st');
   ghost.style.setProperty('--h', p.hue);
   body.append(make('b', null, p.title), make('span', 'gs', bits.join(' · ')), st);
   ghost.append(make('span', 'gn', String(n)), body);
   document.body.appendChild(ghost);
-  drag = Object.assign(p, { ids: ppl.map(q => q.id), ini: ppl.map(q => q.ini), people: idx, x, y, touch, pid,
+  drag = Object.assign(p, { ids: ppl.map(q => q.id), people: idx, x, y, touch, pid,
     ghost, st, hit: {}, hitKey: '', marks: [], armTop: false, armBottom: false });
   document.body.classList.add('dragging');
   p.lift.forEach(e => e.classList.add('lift'));
@@ -834,67 +929,87 @@ function moveDrag(x, y) {
   d.ghost.style.transform = 'translate(' + gx + 'px,' + gy + 'px)';
 
   const el = document.elementFromPoint(x, y);
-  const seatEl = el && el.closest('.seat'), tEl = el && el.closest('.rtable'), benchEl = el && el.closest('#bench');
-  const hit = { t: tEl ? tEl.dataset.t : null, i: seatEl && tEl ? +seatEl.dataset.i : null, bench: !!benchEl };
-  const key = hit.t + '|' + hit.i + '|' + hit.bench;
+  const slotEl = el && el.closest('[data-i]'), cEl = el && el.closest('[data-c]'), benchEl = el && el.closest('.bench');
+  const hit = { c: cEl ? cEl.dataset.c : null, i: slotEl && cEl ? +slotEl.dataset.i : null, bench: !!benchEl };
+  const key = hit.c + '|' + hit.i + '|' + hit.bench;
   if (key === d.hitKey) return;
   d.hitKey = key; d.hit = hit;
-  showPlan(d, planDrop(d, hit), tEl, benchEl);
+  showPlan(d, planDrop(d, hit), cEl, benchEl);
 }
 
 // What a drop on `hit` would do, worked out from the current data (also re-run at drop time).
+// In rooms, infants go into the room's baby cots instead of taking a bed.
 function planDrop(d, hit) {
-  const n = d.ids.length;
-  if (hit.bench) return d.seated ? { type: 'unseat', text: n > 1 ? 'All ' + n + ' back to Still standing' : 'Back to Still standing' } : null;
-  const t = hit.t && tables.find(x => x.id === hit.t);
-  if (!t) return null;
-  if (hit.i != null) {
-    const occ = t.seats[hit.i];
+  const k = KIND[d.kind], n = d.ids.length;
+  if (hit.bench) return d.seated ? { type: 'unseat', text: (n > 1 ? 'All ' + n + ' back to ' : 'Back to ') + k.home } : null;
+  const c = hit.c && k.list().find(x => x.id === hit.c);
+  if (!c) return null;
+  const slots = k.slots(c);
+  const cot = d.kind === 'rooms' ? d.ids.filter(id => (d.people[id] || {}).age === 'infant') : [];
+  const bed = d.ids.filter(id => !cot.includes(id));
+  if (hit.i != null && bed.length) {
+    const occ = slots[hit.i];
     if (n === 1 && occ === d.ids[0]) return null;
-    if (n === 1 && d.from && occ && !d.ids.includes(occ)) {
+    if (n === 1 && d.from && d.from.i != null && occ && !d.ids.includes(occ)) {
       const other = d.people[occ];
-      return { type: 'swap', t, i: hit.i, other: occ, text: '⇄ Swap with ' + (other ? other.name : 'that guest') };
+      return { type: 'swap', c, i: hit.i, other: occ, text: '⇄ Swap with ' + (other ? other.name : 'that guest') };
     }
-  } else if (d.ids.every(id => t.seats.includes(id))) return null;
-  const idx = placeIdx(t, d.ids, hit.i);
+  } else if (d.ids.every(id => slots.includes(id) || (c.cots || []).includes(id))) return null;
+  const idx = placeIdx(slots, bed, hit.i);
   if (!idx) {
-    const free = t.seats.filter(s => !s || d.ids.includes(s)).length;
-    return { type: 'nofit', t, text: 'Only ' + free + ' free at ' + t.name + ' — needs ' + n };
+    const free = slots.filter(s => !s || bed.includes(s)).length;
+    return { type: 'nofit', c, text: 'Only ' + plural(free, 'free ' + k.one, 'free ' + k.many) + ' at ' + c.name + ' — needs ' + bed.length };
   }
-  return { type: 'seat', t, idx, text: '→ ' + t.name + ' · seat' + (n > 1 ? 's ' : ' ') + idx.map(j => j + 1).join(', ') };
+  const text = '→ ' + c.name +
+    (idx.length ? ' · ' + (idx.length > 1 ? k.many : k.one) + ' ' + idx.map(j => j + 1).join(', ') : '') +
+    (cot.length ? ' + ' + (cot.length > 1 ? cot.length + ' baby cots' : 'baby cot') : '');
+  return { type: 'seat', c, idx, bed, cot, text };
 }
 
 function clearMarks(d) {
-  d.marks.forEach(m => { m.el.classList.remove(m.cls); if (m.text != null) m.el.textContent = m.text; });
+  d.marks.forEach(m => { m.el.classList.remove(m.cls); if (m.html != null) m.el.innerHTML = m.html; });
   d.marks = [];
 }
-function showPlan(d, plan, tEl, benchEl) {
+function showPlan(d, plan, cEl, benchEl) {
   clearMarks(d);
   const mark = (el, cls, text) => {
     if (!el) return;
-    d.marks.push({ el, cls, text: text != null ? el.textContent : null });
+    d.marks.push({ el, cls, html: text != null ? el.innerHTML : null });
     el.classList.add(cls);
     if (text != null) el.textContent = text;
   };
   if (plan && plan.type === 'unseat') mark(benchEl, 'over');
   else if (plan) {
-    mark(tEl, plan.type === 'nofit' ? 'nofit' : 'over');
-    const seats = tEl.querySelectorAll('.seat');
-    if (plan.type === 'seat') plan.idx.forEach((j, k) => mark(seats[j], 'target', d.ini[k]));
-    if (plan.type === 'swap') mark(seats[plan.i], 'swap');
+    mark(cEl, plan.type === 'nofit' ? 'nofit' : 'over');
+    const slots = cEl.querySelectorAll('[data-i]');
+    if (plan.type === 'seat') {
+      plan.idx.forEach((j, k) => {
+        const p = d.people[plan.bed[k]];
+        mark(slots[j], 'target', d.kind === 'rooms' ? p.name : p.ini);
+      });
+      if (plan.cot.length) mark(cEl.querySelector('.cots'), 'target');
+    }
+    if (plan.type === 'swap') mark(slots[plan.i], 'swap');
   }
-  d.st.textContent = plan ? plan.text : d.seated ? 'Drop on a seat, or on Still standing to unseat' : 'Drop on a table or a seat';
+  const k = KIND[d.kind];
+  d.st.textContent = plan ? plan.text : d.seated ? 'Drop on a ' + k.one + ', or on ' + k.home + ' to take out' : k.aim;
   d.st.className = 'st' + (plan ? (plan.type === 'nofit' ? ' bad' : ' ok') : '');
 }
 
 function applyPlan(d, plan) {
-  if (plan.type === 'unseat') d.ids.forEach(unseatPerson);
+  const k = KIND[d.kind];
+  if (plan.type === 'unseat') d.ids.forEach(k.release);
   else if (plan.type === 'swap') {
-    const src = tables.find(x => x.id === d.from.t);
-    if (!src || src.seats[d.from.i] !== d.ids[0]) return;
-    src.seats[d.from.i] = plan.other;
-    plan.t.seats[plan.i] = d.ids[0];
-  } else seatIds(plan.t, d.ids, plan.idx);
+    const src = k.list().find(x => x.id === d.from.c);
+    if (!src || k.slots(src)[d.from.i] !== d.ids[0]) return;
+    k.slots(src)[d.from.i] = plan.other;
+    k.slots(plan.c)[plan.i] = d.ids[0];
+  } else {
+    d.ids.forEach(k.release);
+    const slots = k.slots(plan.c);
+    plan.idx.forEach((j, n) => { slots[j] = plan.bed[n]; });
+    if (plan.cot.length) plan.c.cots = (plan.c.cots || []).concat(plan.cot);
+  }
   save();
 }
 
@@ -922,14 +1037,14 @@ function endDrag(drop) {
 }
 
 // Scroll the page while dragging near the top or bottom edge. On phones the bottom edge is the
-// top of the Still standing tray. Each edge only arms once the pointer has been away from it,
+// top of the bottom tray. Each edge only arms once the pointer has been away from it,
 // so dragging up out of the tray doesn't scroll the page down.
 function autoScroll() {
   const d = drag;
   if (!d) return;
   let bottom = innerHeight;
   if (narrowMQ.matches) {
-    const b = $('bench').getBoundingClientRect().top;
+    const b = $(KIND[d.kind].bench).getBoundingClientRect().top;
     if (b > 0 && b < innerHeight) bottom = b;
   }
   const Z = 60;
@@ -947,14 +1062,16 @@ function autoScroll() {
 }
 
 // Block page scrolling once a touch drag has started (must be non-passive), and finish touch drags.
-$('view-tables').addEventListener('touchmove', e => {
-  if (!drag) return;
-  e.preventDefault();
-  const t = e.touches[0];
-  if (t) moveDrag(t.clientX, t.clientY);
-}, { passive: false });
-$('view-tables').addEventListener('touchend', () => { if (drag && drag.touch) endDrag(true); });
-$('view-tables').addEventListener('touchcancel', () => { if (drag && drag.touch) endDrag(false); });
+['view-tables', 'view-rooms'].forEach(id => {
+  $(id).addEventListener('touchmove', e => {
+    if (!drag) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    if (t) moveDrag(t.clientX, t.clientY);
+  }, { passive: false });
+  $(id).addEventListener('touchend', () => { if (drag && drag.touch) endDrag(true); });
+  $(id).addEventListener('touchcancel', () => { if (drag && drag.touch) endDrag(false); });
+});
 addEventListener('keydown', e => { if (drag && e.key === 'Escape') endDrag(false); });
 addEventListener('blur', () => endDrag(false));
 // A drag ends with a click on whatever was under it; don't let that open a menu.
@@ -981,7 +1098,7 @@ function renderTables() {
   tables.forEach(t => {
     const n = t.seats.length;
     const card = make('div', 'rtable');
-    card.dataset.t = t.id;
+    card.dataset.c = t.id;
     const rt = make('div', 'rt');
     const top = make('button', 'rt-top');
     top.title = 'Rename table';
@@ -1003,7 +1120,7 @@ function renderTables() {
       s.setAttribute('aria-label', label);
       if (p) {
         s.style.setProperty('--h', hue[p.guest.id]);
-        draggable(s, () => ({ ids: [p.id], title: p.name, hue: hue[p.guest.id], seated: true, from: { t: t.id, i },
+        draggable(s, () => ({ ids: [p.id], title: p.name, hue: hue[p.guest.id], seated: true, from: { c: t.id, i },
           lift: [s], note: p.main ? '' : 'with ' + fullName(p.guest) }));
         if (!byGuest[p.guest.id]) groups.push(byGuest[p.guest.id] = { g: p.guest, people: [], seats: [] });
         byGuest[p.guest.id].people.push(p);
@@ -1044,14 +1161,26 @@ function renderTables() {
     wrapEl.appendChild(card);
   });
 
-  const list = $('bench-list');
+  renderBench('tables');
+}
+
+/* ---------------- bench: people not yet placed (tables or rooms) ---------------- */
+function kidsLabel(people) {
+  const kids = people.filter(p => p.age === 'kid').length, inf = people.filter(p => p.age === 'infant').length;
+  return [kids ? plural(kids, 'kid', 'kids') : '', inf ? plural(inf, 'infant', 'infants') : ''].filter(Boolean).join(' · ');
+}
+function renderBench(kind) {
+  const k = KIND[kind], hue = partyHues(), rooming = kind === 'rooms';
+  const placed = rooming ? roomOf : seatOf, key = rooming ? 'r' : 'b', q = rooming ? rquery : '';
+  const list = $(k.bench + '-list');
   list.innerHTML = '';
   let ppl = 0, parties = 0;
   guests.forEach(g => {
-    const all = party(g), left = all.filter(p => !seatOf(p.id));
+    const all = party(g), left = all.filter(p => !placed(p.id));
     if (!left.length) return;
+    if (q && !(fullName(g) + ' ' + all.map(p => p.name).join(' ')).toLowerCase().includes(q)) return;
     ppl += left.length; parties++;
-    const isOpen = !!open['b' + g.id];
+    const isOpen = !!open[key + g.id];
     const label = left.some(p => p.main) ? fullName(g) : left.map(p => p.name).join(', ');
     const card = make('div', 'pcard' + (isOpen ? ' open' : ''));
     card.style.setProperty('--h', hue[g.id]);
@@ -1059,33 +1188,206 @@ function renderTables() {
     head.setAttribute('aria-expanded', String(isOpen));
     head.title = left.map(p => p.name).join(', ');
     head.append(make('span', 'dot'), make('span', 'pnm', label));
+    const kl = kidsLabel(left);
+    if (kl) head.appendChild(make('span', 'ktag', kl));
     if (left.length > 1) head.appendChild(make('span', 'pct', String(left.length)));
-    head.addEventListener('click', () => { open['b' + g.id] = !isOpen; render(); });
-    draggable(head, () => ({ ids: left.map(p => p.id), title: label, hue: hue[g.id], seated: false, lift: [card],
-      note: left.length < all.length ? (all.length - left.length) + ' already seated' : (left.some(p => p.main) ? '' : 'with ' + fullName(g)) }));
+    head.addEventListener('click', () => { open[key + g.id] = !isOpen; render(); });
+    draggable(head, () => ({ kind, ids: left.map(p => p.id), title: label, hue: hue[g.id], seated: false, lift: [card],
+      note: left.length < all.length ? (all.length - left.length) + (rooming ? ' already in a room' : ' already seated')
+        : (left.some(p => p.main) ? '' : 'with ' + fullName(g)) }));
     card.appendChild(head);
     if (isOpen) {
       const mem = make('div', 'pmembers');
       if (left.length > 1) {
-        mem.appendChild(make('span', 'phint', 'Drag a name to seat just that person:'));
+        mem.appendChild(make('span', 'phint', rooming ? 'Drag a name to move just that person:' : 'Drag a name to seat just that person:'));
         left.forEach(p => {
-          const c = make('button', 'mchip' + (p.age !== 'adult' ? ' kid' : ''), p.name);
-          draggable(c, () => ({ ids: [p.id], title: p.name, hue: hue[g.id], seated: false, lift: [c],
+          const c = make('button', 'mchip' + (p.age !== 'adult' ? ' kid' : ''), p.name + (p.age !== 'adult' ? ' · ' + p.age : ''));
+          draggable(c, () => ({ kind, ids: [p.id], title: p.name, hue: hue[g.id], seated: false, lift: [c],
             note: p.main ? '' : 'with ' + fullName(g) }));
           mem.appendChild(c);
         });
       }
-      const st = make('button', 'ghost', 'Seat at a table…');
-      st.addEventListener('click', () => seatPartyMenu(g));
+      const st = make('button', 'ghost', rooming ? 'Put in a room…' : 'Seat at a table…');
+      st.addEventListener('click', () => rooming ? roomPartyMenu(g) : seatPartyMenu(g));
       mem.appendChild(st);
       card.appendChild(mem);
     }
     list.appendChild(card);
   });
-  if (!parties) list.appendChild(make('div', 'empty', tables.length ? 'Everybody has a seat.' : 'Add a table to start seating.'));
-  $('bench-count').textContent = ppl ? ppl + (ppl === 1 ? ' person' : ' people') : '';
-  $('bench').classList.toggle('collapsed', benchCollapsed);
-  $('bench-toggle').textContent = benchCollapsed ? 'Show' : 'Hide';
+  if (!parties) list.appendChild(make('div', 'empty', q ? 'Nobody here matches.'
+    : rooming ? (rooms.length ? 'Everyone has a room.' : 'Add a room, then drag guests in.')
+      : (tables.length ? 'Everybody has a seat.' : 'Add a table to start seating.')));
+  $(k.bench + '-count').textContent = ppl ? plural(ppl, 'person', 'people') : '';
+  $(k.bench).classList.toggle('collapsed', !!benchCollapsed[kind]);
+  $(k.bench + '-toggle').textContent = benchCollapsed[kind] ? 'Show' : 'Hide';
+}
+
+/* ---------------- rooms ---------------- */
+let rquery = '';
+function addRoom(size) {
+  rooms.push({ id: uid(), name: 'Room ' + (rooms.length + 1), size, beds: new Array(size).fill(null), cots: [] });
+  save(); render();
+}
+$('addroom1').addEventListener('click', () => addRoom(1));
+$('addroom2').addEventListener('click', () => addRoom(2));
+$('addroom3').addEventListener('click', () => addRoom(3));
+$('rbench-toggle').addEventListener('click', () => { benchCollapsed.rooms = !benchCollapsed.rooms; render(); });
+$('rsearch').addEventListener('input', function () { rquery = this.value.toLowerCase().trim(); render(); });
+
+// Moves people into room r: infants into its baby cots, everyone else into free beds. false = not enough beds.
+function putInRoom(r, ids) {
+  const idx = personIndex();
+  const cot = ids.filter(id => idx[id] && idx[id].age === 'infant'), bed = ids.filter(id => !cot.includes(id));
+  const at = placeIdx(r.beds, bed, null);
+  if (!at) return false;
+  ids.forEach(unroomPerson);
+  at.forEach((j, n) => { r.beds[j] = bed[n]; });
+  r.cots = (r.cots || []).concat(cot);
+  return true;
+}
+const bedsNeeded = (people) => people.filter(p => p.age !== 'infant').length;
+function setBeds(r, n) {
+  const kept = r.beds.filter(Boolean);
+  r.beds = kept.slice(0, n).concat(new Array(Math.max(0, n - kept.length)).fill(null));
+  r.size = n;
+}
+function roomMenu(r) {
+  sheet(r.name, (box, close) => {
+    option(box, 'Rename', null, () => {
+      close();
+      const v = prompt('Room name or number', r.name);
+      if (v !== null && v.trim()) { r.name = v.trim(); save(); render(); }
+    });
+    [1, 2, 3].forEach(n => {
+      if (n === r.beds.length) return;
+      const out = Math.max(0, r.beds.filter(Boolean).length - n);
+      option(box, 'Make it ' + plural(n, 'bed', 'beds'), out ? plural(out, 'person goes', 'people go') + ' back to Needs a room' : null, () => {
+        setBeds(r, n); save(); close(); render();
+      });
+    });
+    option(box, 'Delete room', 'Everyone in it goes back to Needs a room', () => {
+      if (!confirm('Delete ' + r.name + '?')) return;
+      rooms = rooms.filter(o => o.id !== r.id); save(); close(); render();
+    });
+  });
+}
+function pickPersonForBed(r, i) {
+  sheet('Bed ' + (i + 1) + ' · ' + r.name, (box, close) => {
+    let any = false;
+    guests.forEach(g => party(g).forEach(p => {
+      if (roomOf(p.id)) return;
+      any = true;
+      option(box, p.name, [p.main ? '' : 'with ' + fullName(g), p.age === 'infant' ? 'infant · goes in the baby cot' : p.age === 'kid' ? 'kid' : '']
+        .filter(Boolean).join(' · ') || null, () => {
+        if (p.age === 'infant') r.cots = (r.cots || []).concat(p.id); else r.beds[i] = p.id;
+        save(); close(); render();
+      });
+    }));
+    if (!any) { const e = document.createElement('p'); e.textContent = 'Everyone has a room.'; box.appendChild(e); }
+  });
+}
+function roomPersonMenu(r, p) {
+  sheet(p.name, (box, close) => {
+    option(box, 'Take out of the room', 'Back to Needs a room', () => { unroomPerson(p.id); save(); close(); render(); });
+    const rest = party(p.guest).filter(m => m.id !== p.id && !(roomOf(m.id) && roomOf(m.id).room === r));
+    if (rest.length) option(box, 'Bring the whole party here', plural(rest.length, 'more person', 'more people') + ' from ' + fullName(p.guest), () => {
+      const ids = party(p.guest).map(m => m.id);
+      if (!putInRoom(r, ids)) { close(); toast('Not enough free beds in ' + r.name); return; }
+      save(); close(); render();
+    });
+    rooms.forEach(o => {
+      if (o.id === r.id || (p.age !== 'infant' && !freeBeds(o))) return;
+      option(box, 'Move to ' + o.name, plural(freeBeds(o), 'bed free', 'beds free'), () => { putInRoom(o, [p.id]); save(); close(); render(); });
+    });
+  });
+}
+function roomPartyMenu(g) {
+  sheet('Room for ' + fullName(g), (box, close) => {
+    const left = party(g).filter(p => !roomOf(p.id)), need = bedsNeeded(left);
+    let any = false;
+    rooms.forEach(r => {
+      if (freeBeds(r) < need) return;
+      any = true;
+      option(box, r.name, plural(freeBeds(r), 'bed', 'beds') + ' free of ' + r.beds.length, () => {
+        putInRoom(r, left.map(p => p.id)); save(); close(); render();
+      });
+    });
+    if (!any) { const e = document.createElement('p'); e.textContent = left.length ? 'No room has ' + plural(need, 'free bed', 'free beds') + '. Add another room.' : 'Already in a room.'; box.appendChild(e); }
+  });
+}
+
+function renderRooms() {
+  const idx = personIndex(), hue = partyHues();
+  const wrapEl = $('rooms');
+  wrapEl.innerHTML = '';
+  if (!rooms.length) wrapEl.appendChild(make('div', 'empty', 'No rooms yet. Add one above with 1, 2 or 3 beds.'));
+
+  rooms.forEach(r => {
+    r.beds.forEach((pid, i) => { if (pid && !idx[pid]) r.beds[i] = null; });
+    r.cots = (r.cots || []).filter(pid => idx[pid]);
+    const used = r.beds.filter(Boolean).length, n = r.beds.length;
+    const card = make('div', 'room' + (used === n ? ' full' : ''));
+    card.dataset.c = r.id;
+
+    const head = make('div', 'rhead');
+    const nm = make('button', 'rname', r.name);
+    nm.title = 'Rename, change beds or delete';
+    nm.addEventListener('click', () => roomMenu(r));
+    head.append(nm, make('span', 'rmeta', used + ' / ' + plural(n, 'bed', 'beds')));
+    card.appendChild(head);
+
+    const beds = make('div', 'beds');
+    r.beds.forEach((pid, i) => {
+      const p = pid ? idx[pid] : null;
+      const b = make('button', 'bed' + (p ? ' on' : ''));
+      b.dataset.i = i;
+      if (p) {
+        b.style.setProperty('--h', hue[p.guest.id]);
+        b.append(make('span', 'bi', p.ini), make('span', 'bn', p.name));
+        if (p.age !== 'adult') b.appendChild(make('span', 'ktag', p.age));
+        b.title = 'Bed ' + (i + 1) + ' · ' + p.name + (p.main ? '' : ' (with ' + fullName(p.guest) + ')');
+        draggable(b, () => ({ kind: 'rooms', ids: [p.id], title: p.name, hue: hue[p.guest.id], seated: true,
+          from: { c: r.id, i }, lift: [b], note: p.main ? '' : 'with ' + fullName(p.guest) }));
+      } else b.appendChild(make('span', 'bn', 'Bed ' + (i + 1) + ' · empty'));
+      b.addEventListener('click', () => p ? roomPersonMenu(r, p) : pickPersonForBed(r, i));
+      beds.appendChild(b);
+    });
+    card.appendChild(beds);
+
+    const cots = make('div', 'cots');
+    if (r.cots.length) {
+      cots.appendChild(make('span', null, r.cots.length > 1 ? r.cots.length + ' baby cots:' : 'Baby cot:'));
+      r.cots.forEach(pid => {
+        const p = idx[pid];
+        const c = make('button', 'mchip kid', p.name);
+        c.style.setProperty('--h', hue[p.guest.id]);
+        c.title = p.name + ' · infant' + (p.main ? '' : ' (with ' + fullName(p.guest) + ')');
+        draggable(c, () => ({ kind: 'rooms', ids: [p.id], title: p.name, hue: hue[p.guest.id], seated: true,
+          from: { c: r.id }, lift: [c], note: p.main ? '' : 'with ' + fullName(p.guest) }));
+        c.addEventListener('click', () => roomPersonMenu(r, p));
+        cots.appendChild(c);
+      });
+    } else cots.textContent = 'No baby cot';
+    card.appendChild(cots);
+
+    const inRoom = r.beds.concat(r.cots).filter(Boolean).map(pid => idx[pid]);
+    const adults = inRoom.filter(p => p.age === 'adult').length, kl = kidsLabel(inRoom);
+    card.appendChild(make('div', 'rsum', inRoom.length
+      ? [adults ? plural(adults, 'adult', 'adults') : '', kl].filter(Boolean).join(' · ')
+      : 'Empty'));
+
+    const foot = make('div', 'rt-foot');
+    const x = make('button', 'x', 'Delete room');
+    x.addEventListener('click', () => {
+      if (!confirm('Delete ' + r.name + '? Everyone in it goes back to Needs a room.')) return;
+      rooms = rooms.filter(o => o.id !== r.id); save(); render();
+    });
+    foot.appendChild(x);
+    card.appendChild(foot);
+    wrapEl.appendChild(card);
+  });
+
+  renderBench('rooms');
 }
 
 /* ---------------- guests ---------------- */
@@ -1101,6 +1403,13 @@ function ageRow(parent, p, onChange) {
     const sp = document.createElement('span');
     sp.className = 'seatpill';
     sp.textContent = s.table.name + ' · ' + (s.index + 1);
+    r.appendChild(sp);
+  }
+  const rm = roomOf(p.id);
+  if (rm) {
+    const sp = document.createElement('span');
+    sp.className = 'seatpill';
+    sp.textContent = rm.room.name + (rm.cot ? ' · cot' : '');
     r.appendChild(sp);
   }
   [['infant', 'infant 1–3'], ['kid', 'kid 3–12']].forEach(a => {
@@ -1159,6 +1468,13 @@ function renderGuests() {
       sp.textContent = seat0.table.name;
       row.appendChild(sp);
     }
+    const room0 = roomOf(g.id);
+    if (room0) {
+      const sp = document.createElement('span');
+      sp.className = 'seatpill';
+      sp.textContent = room0.room.name;
+      row.appendChild(sp);
+    }
     if ((g.companions || []).length) {
       const badge = document.createElement('span');
       badge.className = 'badge';
@@ -1186,7 +1502,7 @@ function renderGuests() {
       del.className = 'del'; del.type = 'button'; del.textContent = 'Remove';
       del.addEventListener('click', () => {
         if (!confirm('Remove ' + fullName(g) + ' and their party?')) return;
-        party(g).forEach(p => unseatPerson(p.id));
+        party(g).forEach(p => { unseatPerson(p.id); unroomPerson(p.id); });
         guests = guests.filter(x => x.id !== g.id);
         if (editingId === g.id) resetForm();
         save(); render();
@@ -1220,8 +1536,11 @@ function render() {
   $('s-kids').textContent = people.filter(p => p.age === 'kid').length;
   $('s-inf').textContent = people.filter(p => p.age === 'infant').length;
   $('s-seated').textContent = people.filter(p => seatOf(p.id)).length;
+  $('s-roomed').textContent = people.filter(p => roomOf(p.id)).length;
   $('bar').style.width = guests.length ? (called / guests.length * 100) + '%' : '0';
-  if (view === 'guests') renderGuests(); else renderTables();
+  if (view === 'guests') renderGuests();
+  else if (view === 'tables') renderTables();
+  else renderRooms();
 }
 
 /* ---------------- print / PDF ---------------- */
@@ -1239,17 +1558,30 @@ $('btn-print').addEventListener('click', () => {
     });
     h += '</ol></div>';
   });
+  if (rooms.length) {
+    h += '<div class="brk"></div><h2>Rooms</h2>';
+    rooms.forEach(r => {
+      h += '<div class="ptable"><h3>' + esc(r.name) + ' · ' + r.beds.length + (r.beds.length === 1 ? ' bed' : ' beds') + '</h3><ol>';
+      r.beds.forEach(pid => {
+        const p = pid ? idx[pid] : null;
+        h += '<li>' + (p ? esc(p.name) + (p.age === 'kid' ? ' (kid)' : '') : '—') + '</li>';
+      });
+      h += '</ol>';
+      (r.cots || []).forEach(pid => { if (idx[pid]) h += '<div>Baby cot: ' + esc(idx[pid].name) + '</div>'; });
+      h += '</div>';
+    });
+  }
   const rows = allPeople().map(p => {
-    const s = seatOf(p.id);
+    const s = seatOf(p.id), rm = roomOf(p.id);
     return { name: p.name, party: p.main ? '' : fullName(p.guest),
-      table: s ? s.table.name : '', seat: s ? s.index + 1 : '',
+      table: s ? s.table.name : '', seat: s ? s.index + 1 : '', room: rm ? rm.room.name + (rm.cot ? ' (cot)' : '') : '',
       age: p.age === 'adult' ? '' : (p.age === 'infant' ? 'infant' : 'kid') };
   }).sort((a, b) => a.name.localeCompare(b.name, 'hr'));
   h += '<div class="brk"></div><h2>Guest checklist · ' + rows.length + ' people</h2>';
-  h += '<table class="chk"><thead><tr><th></th><th>Name</th><th>With</th><th>Table</th><th>Seat</th><th>Age</th></tr></thead><tbody>';
+  h += '<table class="chk"><thead><tr><th></th><th>Name</th><th>With</th><th>Table</th><th>Seat</th><th>Room</th><th>Age</th></tr></thead><tbody>';
   rows.forEach(r => {
     h += '<tr><td><span class="box"></span></td><td>' + esc(r.name) + '</td><td>' + esc(r.party) +
-      '</td><td>' + esc(r.table) + '</td><td>' + esc(r.seat) + '</td><td>' + esc(r.age) + '</td></tr>';
+      '</td><td>' + esc(r.table) + '</td><td>' + esc(r.seat) + '</td><td>' + esc(r.room) + '</td><td>' + esc(r.age) + '</td></tr>';
   });
   h += '</tbody></table>';
   $('print').innerHTML = h;
