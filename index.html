@@ -101,7 +101,14 @@
   .acts .del { color: var(--claret); }
   .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 26px 16px; text-align: center; color: var(--muted); font-size: 15px; }
 
-  .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  /* Add table / Add room bar: stays pinned to the top while the tables or rooms scroll under it. */
+  .toolbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; display: flex; flex-wrap: wrap; align-items: center;
+    gap: 8px; margin: -8px 0 14px; padding: 8px 0 10px; background: var(--paper); border-bottom: 1px solid var(--line); }
+  .addset { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+  .addlabel { font-size: 14px; font-weight: 600; margin-right: 2px; }
+  .toolbar .accent { margin-left: auto; }
+  .totals { flex: 1 1 100%; display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 13px; color: var(--muted); }
+  .totals strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
   .btn { font: inherit; font-size: 14px; padding: 10px 14px; border-radius: 9px; border: 1px solid var(--line);
     background: var(--surface); color: var(--ink); cursor: pointer; }
   .btn.accent { background: var(--claret); border-color: var(--claret); color: var(--surface); font-weight: 600; }
@@ -323,9 +330,12 @@
 
     <section id="view-tables" class="tview" hidden>
       <div class="tmain">
-        <div class="toolbar">
-          <button class="btn" id="add10">Add table · 10 seats</button>
-          <button class="btn" id="add12">Add table · 12 seats</button>
+        <div class="toolbar" id="tbar">
+          <div class="addset" role="group" aria-labelledby="add-table-label">
+            <span class="addlabel" id="add-table-label">Add table</span>
+            <button class="btn" id="add10">10 seats</button>
+            <button class="btn" id="add12">12 seats</button>
+          </div>
           <button class="btn accent" id="autoseat">Seat everyone left</button>
         </div>
         <p class="howto">Drag a party onto a seat and everyone with them comes along. Drag one seat to move just that person,
@@ -344,10 +354,14 @@
 
     <section id="view-rooms" class="tview" hidden>
       <div class="tmain">
-        <div class="toolbar">
-          <button class="btn" id="addroom1">Add room · 1 bed</button>
-          <button class="btn" id="addroom2">Add room · 2 beds</button>
-          <button class="btn" id="addroom3">Add room · 3 beds</button>
+        <div class="toolbar" id="rbar">
+          <div class="addset" role="group" aria-labelledby="add-room-label">
+            <span class="addlabel" id="add-room-label">Add room</span>
+            <button class="btn" id="addroom1">1 bed</button>
+            <button class="btn" id="addroom2">2 beds</button>
+            <button class="btn" id="addroom3">3 beds</button>
+          </div>
+          <div class="totals" id="rtotals" aria-live="polite"></div>
         </div>
         <p class="howto">Drag a party onto a room and everyone with them moves in. Drag one bed to move just that person;
           drop it on someone else's bed to swap. Infants (1–3) sleep in a baby cot, so they don't use a bed.
@@ -850,9 +864,9 @@ function groupMenu(label, t, ids) {
    { kind: 'tables'|'rooms', ids, title, hue, seated, from?: {c, i}, lift: [elements], note }
    Containers (tables/rooms) are [data-c] cards, their seats/beds are [data-i] slots. */
 const KIND = {
-  tables: { list: () => tables, slots: c => c.seats, release: unseatPerson, bench: 'bench', home: 'Still standing',
+  tables: { list: () => tables, slots: c => c.seats, release: unseatPerson, bench: 'bench', bar: 'tbar', home: 'Still standing',
     one: 'seat', many: 'seats', aim: 'Drop on a table or a seat' },
-  rooms: { list: () => rooms, slots: c => c.beds, release: unroomPerson, bench: 'rbench', home: 'Needs a room',
+  rooms: { list: () => rooms, slots: c => c.beds, release: unroomPerson, bench: 'rbench', bar: 'rbar', home: 'Needs a room',
     one: 'bed', many: 'beds', aim: 'Drop on a room or a bed' }
 };
 let drag = null, suppressUntil = 0, toastTimer = 0;
@@ -1036,22 +1050,25 @@ function endDrag(drop) {
   render();
 }
 
-// Scroll the page while dragging near the top or bottom edge. On phones the bottom edge is the
-// top of the bottom tray. Each edge only arms once the pointer has been away from it,
+// Scroll the page while dragging near the top or bottom edge. Once the add bar is pinned, the top
+// edge is the bottom of that bar; on phones the bottom edge is the top of the bottom tray.
+// Each edge only arms once the pointer has been away from it,
 // so dragging up out of the tray doesn't scroll the page down.
 function autoScroll() {
   const d = drag;
   if (!d) return;
-  let bottom = innerHeight;
+  let top = 0, bottom = innerHeight;
+  const barEl = $(KIND[d.kind].bar), barBox = barEl.getBoundingClientRect();
+  if (barBox.top <= (parseFloat(getComputedStyle(barEl).top) || 0) + 1) top = barBox.bottom;
   if (narrowMQ.matches) {
     const b = $(KIND[d.kind].bench).getBoundingClientRect().top;
     if (b > 0 && b < innerHeight) bottom = b;
   }
   const Z = 60;
-  if (d.y > Z) d.armTop = true;
+  if (d.y > top + Z) d.armTop = true;
   if (d.y < bottom - Z) d.armBottom = true;
   let dy = 0;
-  if (d.armTop && d.y < Z) dy = -(Z - d.y);
+  if (d.armTop && d.y < top + Z) dy = -Math.min(Z, top + Z - d.y);
   else if (d.armBottom && d.y > bottom - Z && d.y < bottom) dy = d.y - (bottom - Z);
   if (dy) {
     const before = scrollY;
@@ -1246,6 +1263,30 @@ function putInRoom(r, ids) {
   return true;
 }
 const bedsNeeded = (people) => people.filter(p => p.age !== 'infant').length;
+// Rooms grouped by how many beds they have: how many single, double and triple rooms, and their beds.
+const ROOM_TYPES = [[1, 'single'], [2, 'double'], [3, 'triple']];
+function roomTypeTotals() {
+  return ROOM_TYPES.map(([size, label]) => {
+    const sameSize = rooms.filter(room => room.beds.length === size);
+    return { label, rooms: sameSize.length, beds: sameSize.length * size,
+      taken: sameSize.reduce((sum, room) => sum + room.beds.filter(Boolean).length, 0) };
+  });
+}
+function renderRoomTotals() {
+  const box = $('rtotals');
+  box.innerHTML = '';
+  roomTypeTotals().forEach(type => {
+    const item = make('span');
+    item.title = plural(type.rooms, type.label + ' room', type.label + ' rooms') + ' · ' + type.taken + ' of ' + plural(type.beds, 'bed', 'beds') + ' taken';
+    item.append(make('strong', null, String(type.rooms)), ' ' + type.label);
+    box.appendChild(item);
+  });
+  const allBeds = rooms.reduce((sum, room) => sum + room.beds.length, 0);
+  const takenBeds = rooms.reduce((sum, room) => sum + room.beds.filter(Boolean).length, 0);
+  const bedsItem = make('span');
+  bedsItem.append(make('strong', null, String(takenBeds)), '/', make('strong', null, String(allBeds)), ' beds taken');
+  box.appendChild(bedsItem);
+}
 function setBeds(r, n) {
   const kept = r.beds.filter(Boolean);
   r.beds = kept.slice(0, n).concat(new Array(Math.max(0, n - kept.length)).fill(null));
@@ -1387,6 +1428,7 @@ function renderRooms() {
     wrapEl.appendChild(card);
   });
 
+  renderRoomTotals();
   renderBench('rooms');
 }
 
@@ -1559,7 +1601,9 @@ $('btn-print').addEventListener('click', () => {
     h += '</ol></div>';
   });
   if (rooms.length) {
-    h += '<div class="brk"></div><h2>Rooms</h2>';
+    h += '<div class="brk"></div><h2>Rooms</h2><p>' +
+      roomTypeTotals().map(type => plural(type.rooms, type.label + ' room', type.label + ' rooms')).join(' · ') +
+      ' · ' + plural(rooms.reduce((sum, room) => sum + room.beds.length, 0), 'bed', 'beds') + ' in total</p>';
     rooms.forEach(r => {
       h += '<div class="ptable"><h3>' + esc(r.name) + ' · ' + r.beds.length + (r.beds.length === 1 ? ' bed' : ' beds') + '</h3><ol>';
       r.beds.forEach(pid => {
