@@ -11,6 +11,7 @@
   :root {
     --paper: #F2ECEA; --surface: #FBF8F7; --ink: #2A2124; --muted: #8B7B7E;
     --line: #DED3D1; --claret: #7A2E3E; --sage: #4F6B57; --gold: #9A7B3F;
+    --on-s: 36%; --on-l: 38%; --on-ink: #FFFFFF;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -20,13 +21,16 @@
     :root:not([data-theme="light"]) {
       --paper: #191416; --surface: #221B1E; --ink: #F0E8E9; --muted: #9C8B8F;
       --line: #372C30; --claret: #D98A9C; --sage: #93B79B; --gold: #CBA95F;
+      --on-s: 38%; --on-l: 70%; --on-ink: #1E1619;
     }
   }
   :root[data-theme="dark"] {
     --paper: #191416; --surface: #221B1E; --ink: #F0E8E9; --muted: #9C8B8F;
     --line: #372C30; --claret: #D98A9C; --sage: #93B79B; --gold: #CBA95F;
+    --on-s: 38%; --on-l: 70%; --on-ink: #1E1619;
   }
   *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
   body { margin: 0; min-height: 100%; background: var(--paper); color: var(--ink);
     font-family: Karla, "Helvetica Neue", Arial, sans-serif; font-size: 16px; line-height: 1.45; }
@@ -37,13 +41,13 @@
   h1 em { font-style: italic; }
   .userline { font-size: 12.5px; color: var(--muted); margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
   .userline .ghost { padding: 0; font-size: 12.5px; }
-  .stats { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; color: var(--muted); }
+  .stats { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 13.5px; color: var(--muted); }
   .stats strong { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
   .meter { height: 3px; background: var(--line); margin: 10px 0 18px; border-radius: 2px; overflow: hidden; }
   .meter span { display: block; height: 100%; width: 0; background: var(--sage); transition: width .3s ease; }
 
   .tabs { display: flex; gap: 6px; margin-bottom: 16px; }
-  .tabs button { flex: 1; font: inherit; font-size: 14.5px; padding: 10px 4px;
+  .tabs button { flex: 1; min-width: 0; font: inherit; font-size: 14px; padding: 10px 2px;
     border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 10px; cursor: pointer; }
   .tabs button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 
@@ -67,47 +71,49 @@
   .ghost { font: inherit; font-size: 14px; background: none; border: 0; color: var(--muted); cursor: pointer; padding: 8px 4px; text-decoration: underline; }
 
   .chips { display: flex; gap: 6px; margin: 22px 0 10px; flex-wrap: wrap; }
-  .chip { font: inherit; font-size: 14px; padding: 7px 12px; border: 1px solid var(--line); background: transparent;
+  .chip { font: inherit; font-size: 14px; padding: 8px 13px; border: 1px solid var(--line); background: transparent;
     color: var(--muted); border-radius: 999px; cursor: pointer; white-space: nowrap; }
   .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 
   ul.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
   li.guest { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
   li.guest.done { background: transparent; }
-  li.guest.declined .row { opacity: .55; }
-  .row { display: flex; align-items: center; gap: 10px; padding: 11px 13px; }
+  .row { display: flex; align-items: center; gap: 11px; padding: 11px 13px; }
   .tick { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--line);
     background: transparent; color: transparent; font-size: 15px; line-height: 1; cursor: pointer; display: grid; place-items: center; }
   .done .tick { background: var(--sage); border-color: var(--sage); color: var(--surface); }
   .who { flex: 1 1 auto; min-width: 0; cursor: pointer; text-align: left; background: none; border: 0; font: inherit; color: inherit; padding: 0; }
   .who .name { display: block; font-size: 17px; font-weight: 500; overflow-wrap: anywhere; }
+  .done .who .name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--line); }
   .who .sub { display: block; font-size: 13px; color: var(--muted); }
   .badge { flex: 0 0 auto; font-size: 13px; color: var(--claret); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; }
   .seatpill { flex: 0 0 auto; font-size: 12px; color: var(--gold); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
-  .st { flex: 0 0 auto; font-size: 12px; border-radius: 999px; padding: 2px 8px; white-space: nowrap; color: var(--surface); }
-  .st.yes { background: var(--sage); }
-  .st.no { background: var(--claret); }
-
+  li.guest.declined .row { opacity: .55; }
+  .rsvp { flex: 0 0 auto; font-size: 12px; border-radius: 999px; padding: 2px 8px; white-space: nowrap; color: var(--surface); }
+  .rsvp.yes { background: var(--sage); }
+  .rsvp.no { background: var(--claret); }
   .detail { padding: 2px 13px 14px; font-size: 14px; color: var(--muted); border-top: 1px solid var(--line); }
   .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 10px 0 8px; }
   .seg button { flex: 1; font: inherit; font-size: 14px; padding: 9px 4px; border: 0; background: transparent; color: var(--muted); cursor: pointer; }
   .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"].pending { background: var(--ink); color: var(--paper); }
   .seg button[aria-pressed="true"].yes { background: var(--sage); color: var(--surface); }
   .seg button[aria-pressed="true"].no { background: var(--claret); color: var(--surface); }
-  .seg button[aria-pressed="true"].pending { background: var(--ink); color: var(--paper); }
   .person { display: flex; align-items: center; gap: 6px; padding: 7px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
-  .person:first-of-type { border-top: 0; }
+  .seg + .person { border-top: 0; }
+  .person .lead { flex: 1 1 100%; font-size: 12.5px; color: var(--muted); }
   .person input[type="text"] { flex: 1 1 120px; min-width: 0; padding: 7px 9px; font-size: 14.5px; border-radius: 8px; }
-  .person .lead { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); width: 100%; }
+  .rm { flex: 0 0 auto; font: inherit; font-size: 17px; line-height: 1; width: 30px; height: 30px; border-radius: 50%;
+    border: 1px solid var(--line); background: transparent; color: var(--claret); cursor: pointer; }
+  .person .pn { flex: 1 1 auto; color: var(--ink); font-size: 14.5px; overflow-wrap: anywhere; }
   .age { font: inherit; font-size: 12px; padding: 4px 9px; border-radius: 999px; border: 1px solid var(--line);
     background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; }
   .age[aria-pressed="true"] { background: var(--gold); border-color: var(--gold); color: var(--surface); }
-  .rm { font: inherit; font-size: 16px; line-height: 1; width: 30px; height: 30px; border-radius: 50%;
-    border: 1px solid var(--line); background: transparent; color: var(--claret); cursor: pointer; }
-  .acts { display: flex; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
-  .acts button { font: inherit; font-size: 14px; background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; color: var(--ink); }
+  .acts { display: flex; gap: 14px; margin-top: 10px; flex-wrap: wrap; }
+  .acts button { font: inherit; font-size: 14px; background: none; border: 0; padding: 4px 0; cursor: pointer; text-decoration: underline; }
+  .acts .edit { color: var(--ink); }
   .acts .del { color: var(--claret); }
-  .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 26px 16px; text-align: center; color: var(--muted); font-size: 15px; list-style: none; }
+  .empty { border: 1px dashed var(--line); border-radius: 12px; padding: 26px 16px; text-align: center; color: var(--muted); font-size: 15px; }
 
   /* Add table / Add room bar: stays pinned to the top while the tables or rooms scroll under it. */
   .toolbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 4; display: flex; flex-wrap: wrap; align-items: center;
@@ -120,22 +126,135 @@
   .btn { font: inherit; font-size: 14px; padding: 10px 14px; border-radius: 9px; border: 1px solid var(--line);
     background: var(--surface); color: var(--ink); cursor: pointer; }
   .btn.accent { background: var(--claret); border-color: var(--claret); color: var(--surface); font-weight: 600; }
-  .btn.go { background: var(--sage); border-color: var(--sage); color: var(--surface); font-weight: 600; }
-  .table { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px; overflow: hidden; }
-  .thead { display: flex; align-items: baseline; gap: 10px; padding: 12px 14px 8px; }
-  .thead .tname { font-family: "Instrument Serif", Georgia, serif; font-size: 22px; flex: 1 1 auto; cursor: pointer; }
-  .thead .tmeta { font-size: 13px; color: var(--muted); }
-  .thead .x { font: inherit; font-size: 13px; background: none; border: 0; color: var(--claret); cursor: pointer; text-decoration: underline; }
-  .seats { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border-top: 1px solid var(--line); }
-  @media (min-width: 520px) { .seats { grid-template-columns: 1fr 1fr; } }
-  .seat { display: flex; align-items: center; gap: 9px; width: 100%; font: inherit; text-align: left; padding: 9px 13px;
-    cursor: pointer; background: var(--surface); color: var(--ink); border: 0; }
-  .seat .no { flex: 0 0 auto; width: 22px; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .seat .pname { flex: 1 1 auto; font-size: 15px; overflow-wrap: anywhere; }
-  .seat.free .pname { color: var(--muted); font-style: italic; }
-  .tag { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--gold); color: var(--gold); white-space: nowrap; }
+  .howto { font-size: 13px; color: var(--muted); margin: -4px 0 14px; }
 
-  /* arrivals */
+  /* ---- seating: round tables ---- */
+  .wrap.tables-view .tabs, .wrap.tables-view .meter { max-width: 648px; }
+  .tgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+  .tgrid > .empty { grid-column: 1 / -1; }
+  .rtable { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-width: 0;
+    transition: border-color .12s, box-shadow .12s; }
+  .rtable.over { border-color: var(--sage); box-shadow: 0 0 0 1px var(--sage); }
+  .rtable.nofit { border-color: var(--claret); box-shadow: 0 0 0 1px var(--claret); }
+  .rt { position: relative; width: 100%; max-width: 320px; aspect-ratio: 1 / 1; margin: 0 auto; container-type: inline-size; }
+  .rt-top { position: absolute; left: 50%; top: 50%; width: 52%; height: 52%; transform: translate(-50%, -50%);
+    border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: inherit;
+    padding: 8%; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; text-align: center; overflow: hidden; }
+  .rt-top .tn { font-family: "Instrument Serif", Georgia, serif; font-size: 20px; font-size: 7.4cqw; line-height: 1.05; overflow-wrap: anywhere; }
+  .rt-top .tc { font-size: 12px; font-size: 4.4cqw; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .seat { position: absolute; width: 16%; height: 16%; transform: translate(-50%, -50%); border-radius: 50%; padding: 0;
+    border: 1.5px dashed var(--line); background: var(--surface); color: var(--muted);
+    font: 600 11px/1 Karla, "Helvetica Neue", Arial, sans-serif; font-size: 4.2cqw; font-variant-numeric: tabular-nums;
+    display: grid; place-items: center; cursor: pointer; transition: transform .12s, box-shadow .12s, opacity .12s;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .seat.on { border: 0; background: hsl(var(--h) var(--on-s) var(--on-l)); color: var(--on-ink); font-size: 13px; font-size: 4.8cqw; cursor: grab; }
+  .seat.kid { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--gold); }
+  @media (hover: hover) { .seat:hover { transform: translate(-50%, -50%) scale(1.08); } }
+  .seat.lift { opacity: .3; }
+  .seat.target { opacity: 1; border: 2px solid var(--sage); background: color-mix(in srgb, var(--sage) 22%, var(--surface));
+    color: var(--sage); transform: translate(-50%, -50%) scale(1.12); }
+  .seat.swap { opacity: 1; box-shadow: 0 0 0 3px var(--sage); transform: translate(-50%, -50%) scale(1.12); }
+  .rt-parties { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .pchip { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; font: inherit; font-size: 12.5px;
+    padding: 4px 10px 4px 7px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper);
+    color: var(--ink); cursor: grab; text-align: left; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .dot { flex: 0 0 auto; width: 11px; height: 11px; border-radius: 50%; background: hsl(var(--h) var(--on-s) var(--on-l)); }
+  .rt-foot { display: flex; justify-content: flex-end; margin-top: 6px; }
+  .rt-foot .x { font: inherit; font-size: 13px; background: none; border: 0; color: var(--claret); cursor: pointer;
+    text-decoration: underline; padding: 4px 0; }
+
+  /* ---- seating: people still to seat ---- */
+  .bench .bench-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+  .bench h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; font-size: 23px; margin: 0; flex: 1 1 auto; }
+  .bench-count { font-size: 13px; color: var(--muted); }
+  .bench .ghost { padding: 0; font-size: 13px; }
+  .bench.over { box-shadow: inset 0 0 0 2px var(--sage); }
+  .blist { display: flex; flex-wrap: wrap; gap: 6px; }
+  .blist > .empty { flex: 1 1 100%; }
+  .pcard { max-width: 100%; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); transition: opacity .12s; }
+  .pcard.open { flex: 1 1 100%; }
+  .phead { display: flex; align-items: center; gap: 7px; max-width: 100%; font: inherit; font-size: 14px; color: var(--ink);
+    background: none; border: 0; padding: 7px 10px 7px 9px; cursor: grab; text-align: left;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .pcard.open .phead { width: 100%; }
+  .pnm { min-width: 0; overflow-wrap: anywhere; }
+  .pct { flex: 0 0 auto; font-size: 12px; font-weight: 600; color: var(--claret); border: 1px solid var(--line);
+    border-radius: 999px; padding: 0 7px; font-variant-numeric: tabular-nums; }
+  .pmembers { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 0 10px 10px; }
+  .phint { flex: 1 1 100%; font-size: 12.5px; color: var(--muted); }
+  .mchip { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .mchip.kid { border-color: var(--gold); }
+  .pcard.lift, .pchip.lift, .mchip.lift { opacity: .35; }
+  .ktag { flex: 0 0 auto; font-size: 11.5px; color: var(--gold); white-space: nowrap; }
+  .bench-search { width: 100%; margin-bottom: 10px; font-size: 14px !important; padding: 8px 11px !important; }
+
+  /* ---- rooms ---- */
+  .rgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .rgrid > .empty { grid-column: 1 / -1; }
+  .room { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; min-width: 0;
+    display: flex; flex-direction: column; gap: 9px; transition: border-color .12s, box-shadow .12s; }
+  .room.over { border-color: var(--sage); box-shadow: 0 0 0 1px var(--sage); }
+  .room.nofit { border-color: var(--claret); box-shadow: 0 0 0 1px var(--claret); }
+  .rhead { display: flex; align-items: baseline; gap: 8px; }
+  .rname { flex: 1 1 auto; min-width: 0; text-align: left; font-family: "Instrument Serif", Georgia, serif; font-size: 22px;
+    line-height: 1.1; background: none; border: 0; padding: 0; color: var(--ink); cursor: pointer; overflow-wrap: anywhere; }
+  .rmeta { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .room.full .rmeta { color: var(--sage); }
+  .beds { display: grid; gap: 6px; }
+  .bed { position: relative; display: flex; align-items: center; gap: 9px; width: 100%; min-height: 46px; padding: 7px 10px 7px 16px;
+    font: inherit; font-size: 14.5px; text-align: left; color: var(--muted); background: var(--paper); cursor: pointer;
+    border: 1.5px dashed var(--line); border-radius: 10px; transition: opacity .12s, box-shadow .12s;
+    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  .bed::before { content: ""; position: absolute; left: 5px; top: 9px; bottom: 9px; width: 5px; border-radius: 3px; background: var(--line); }
+  .bed.on { border: 1px solid var(--line); color: var(--ink); background: var(--surface); cursor: grab; }
+  .bed.on::before { background: hsl(var(--h) var(--on-s) var(--on-l)); }
+  .bed .bi { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 11.5px;
+    font-weight: 600; background: hsl(var(--h) var(--on-s) var(--on-l)); color: var(--on-ink); }
+  .bed .bn { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+  .bed.lift { opacity: .3; }
+  .bed.target { opacity: 1; border: 2px solid var(--sage); color: var(--sage); background: color-mix(in srgb, var(--sage) 14%, var(--surface)); }
+  .bed.swap { opacity: 1; box-shadow: 0 0 0 3px var(--sage); }
+  .cots { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: var(--muted);
+    border-radius: 10px; padding: 2px 0; }
+  .cots.target { outline: 2px solid var(--sage); outline-offset: 3px; color: var(--sage); }
+  .rsum { font-size: 12.5px; color: var(--muted); }
+  .room .rt-foot { justify-content: space-between; margin-top: 0; }
+
+  @media (min-width: 960px) {
+    .wrap.tables-view { max-width: 1180px; }
+    .tview { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 22px; align-items: start; }
+    .bench { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; background: var(--surface);
+      border: 1px solid var(--line); border-radius: 14px; padding: 14px; }
+    .bench-toggle { display: none; }
+  }
+  @media (max-width: 959.98px) {
+    .wrap.tables-view { padding-bottom: 0; }
+    .bench { position: sticky; bottom: 0; z-index: 5; margin: 18px -16px 0; max-height: 42vh; overflow: auto;
+      padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px)); background: var(--surface);
+      border-top: 1px solid var(--line); box-shadow: 0 -8px 24px rgba(20,12,14,.10); }
+    .bench.collapsed .bench-head { margin-bottom: 0; }
+    .bench.collapsed .blist, .bench.collapsed .bench-search { display: none; }
+  }
+
+  /* ---- drag & drop ---- */
+  body.dragging, body.dragging * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+  .dragghost { position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none; display: flex; gap: 10px; align-items: flex-start;
+    max-width: min(290px, calc(100vw - 16px)); padding: 9px 13px 9px 9px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); box-shadow: 0 12px 30px rgba(20,12,14,.24); font-size: 13px; line-height: 1.3; }
+  .dragghost .gn { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+    font-size: 16px; font-weight: 600; background: hsl(var(--h) var(--on-s) var(--on-l)); color: var(--on-ink); }
+  .dragghost b { display: block; font-size: 14.5px; font-weight: 600; overflow-wrap: anywhere; }
+  .dragghost .gs { display: block; color: var(--muted); }
+  .dragghost .st { display: block; margin-top: 3px; font-weight: 600; color: var(--muted); }
+  .dragghost .st.ok { color: var(--sage); }
+  .dragghost .st.bad { color: var(--claret); }
+  .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+    z-index: 60; max-width: calc(100vw - 32px); padding: 10px 14px; border-radius: 10px; background: var(--ink); color: var(--paper);
+    font-size: 14px; box-shadow: 0 8px 24px rgba(20,12,14,.25); }
+
+  /* ---- arrivals (wedding day) ---- */
   .bigcount { display: flex; align-items: baseline; gap: 8px; }
   .bigcount #a-in { font-family: "Instrument Serif", Georgia, serif; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
   .bigcount .of { font-size: 15px; color: var(--muted); }
@@ -143,13 +262,14 @@
   .acard { padding: 12px 13px; }
   .acard.all-in { background: transparent; }
   .acard .top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 9px; }
-  .acard .top .nm { flex: 1 1 auto; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
-  .acard .top .tb { font-size: 13px; color: var(--gold); white-space: nowrap; }
+  .acard .nm { flex: 1 1 auto; min-width: 0; font-size: 17px; font-weight: 600; overflow-wrap: anywhere; }
+  .acard .tb { font-size: 13px; color: var(--gold); white-space: nowrap; }
   .acard .ppl { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-  .pchip { font: inherit; font-size: 14.5px; padding: 8px 12px; border-radius: 999px; border: 1.5px solid var(--line);
+  .achip { font: inherit; font-size: 14.5px; padding: 8px 12px; border-radius: 999px; border: 1.5px solid var(--line);
     background: var(--paper); color: var(--ink); cursor: pointer; }
-  .pchip[aria-pressed="true"] { background: var(--sage); border-color: var(--sage); color: var(--surface); }
-  .acard .ppl .btn { margin-left: auto; }
+  .achip[aria-pressed="true"] { background: var(--sage); border-color: var(--sage); color: var(--surface); }
+  .acard .ppl .btn { margin-left: auto; padding: 8px 12px; }
+  .btn.go { background: var(--sage); border-color: var(--sage); color: var(--surface); font-weight: 600; }
 
   .scrim { position: fixed; inset: 0; background: rgba(20,12,14,.55); display: grid; place-items: end center; padding: 12px; z-index: 20; }
   .sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; width: 100%; max-width: 560px;
@@ -196,23 +316,24 @@
     <div class="stats">
       <span><strong id="s-called">0</strong>/<strong id="s-parties">0</strong> called</span>
       <span><strong id="s-yes">0</strong> coming</span>
-      <span><strong id="s-heads">0</strong> invited</span>
+      <span><strong id="s-heads">0</strong> people</span>
       <span><strong id="s-kids">0</strong> kids · <strong id="s-inf">0</strong> infants</span>
       <span><strong id="s-seated">0</strong> seated</span>
+      <span><strong id="s-roomed">0</strong> in rooms</span>
     </div>
     <div class="meter"><span id="bar"></span></div>
 
     <div class="tabs">
       <button id="tab-guests" aria-pressed="true">Guests</button>
       <button id="tab-tables" aria-pressed="false">Tables</button>
+      <button id="tab-rooms" aria-pressed="false">Rooms</button>
       <button id="tab-arrivals" aria-pressed="false">Arrivals</button>
-      <button id="btn-print">PDF</button>
+      <button id="btn-print">Print</button>
     </div>
 
-    <!-- GUESTS -->
     <section id="view-guests">
       <form class="card" id="form" autocomplete="off">
-        <h2>Add a guest</h2>
+        <h2 id="form-title">Add a guest</h2>
         <div class="two">
           <div class="field"><label for="first">First name</label><input type="text" id="first" required></div>
           <div class="field"><label for="last">Last name</label><input type="text" id="last"></div>
@@ -225,17 +346,18 @@
           <span class="hint">Names optional</span>
         </div>
         <div id="companions"></div>
-        <button class="primary" type="submit">Add to the list</button>
+        <button class="primary" type="submit" id="submit">Add to the list</button>
+        <button class="ghost" type="button" id="cancel" hidden>Cancel edit</button>
       </form>
 
       <div class="chips">
-        <button class="chip gchip" data-filter="todo" aria-pressed="true">To call</button>
-        <button class="chip gchip" data-filter="done" aria-pressed="false">Called</button>
-        <button class="chip gchip" data-filter="pending" aria-pressed="false">No answer</button>
-        <button class="chip gchip" data-filter="yes" aria-pressed="false">Coming</button>
-        <button class="chip gchip" data-filter="no" aria-pressed="false">Not coming</button>
-        <button class="chip gchip" data-filter="unseated" aria-pressed="false">Not seated</button>
-        <button class="chip gchip" data-filter="all" aria-pressed="false">All</button>
+        <button class="chip" data-filter="todo" aria-pressed="true">To call</button>
+        <button class="chip" data-filter="all" aria-pressed="false">Everyone</button>
+        <button class="chip" data-filter="done" aria-pressed="false">Called</button>
+        <button class="chip" data-filter="pending" aria-pressed="false">No answer</button>
+        <button class="chip" data-filter="yes" aria-pressed="false">Coming</button>
+        <button class="chip" data-filter="no" aria-pressed="false">Not coming</button>
+        <button class="chip" data-filter="unseated" aria-pressed="false">Not seated</button>
       </div>
       <div class="field"><input type="search" id="search" placeholder="Search names"></div>
       <ul class="list" id="list"></ul>
@@ -256,9 +378,14 @@
           or a name under a table to move that group. On a phone, press and hold before dragging. Gold ring = kid or infant.</p>
         <div id="tables" class="tgrid"></div>
       </div>
-      <div id="tables"></div>
-      <h2 style="font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:23px;margin:22px 0 10px">Still standing</h2>
-      <ul class="list" id="unseated"></ul>
+      <aside id="bench" class="bench" aria-label="Still standing">
+        <div class="bench-head">
+          <h2>Still standing</h2>
+          <span id="bench-count" class="bench-count"></span>
+          <button class="ghost bench-toggle" type="button" id="bench-toggle">Hide</button>
+        </div>
+        <div id="bench-list" class="blist"></div>
+      </aside>
     </section>
 
     <section id="view-rooms" class="tview" hidden>
@@ -277,6 +404,26 @@
           Tap a room's name to rename it, change the beds or delete it.</p>
         <div id="rooms" class="rgrid"></div>
       </div>
+      <aside id="rbench" class="bench" aria-label="Needs a room">
+        <div class="bench-head">
+          <h2>Needs a room</h2>
+          <span id="rbench-count" class="bench-count"></span>
+          <button class="ghost bench-toggle" type="button" id="rbench-toggle">Hide</button>
+        </div>
+        <input type="search" id="rsearch" class="bench-search" placeholder="Find a guest">
+        <div id="rbench-list" class="blist"></div>
+      </aside>
+    </section>
+
+    <section id="view-arrivals" hidden>
+      <div class="bigcount"><span id="a-in">0</span><span class="of">of <strong id="a-total">0</strong> in the room</span></div>
+      <div class="meter"><span id="a-bar"></span></div>
+      <div class="field"><input type="search" id="a-search" placeholder="Find a guest"></div>
+      <div class="chips" style="margin-top:0">
+        <button class="chip" data-af="waiting" aria-pressed="true">Waiting</button>
+        <button class="chip" data-af="here" aria-pressed="false">In the room</button>
+        <button class="chip" data-af="all" aria-pressed="false">All</button>
+      </div>
       <ul class="list" id="arrivals"></ul>
       <button class="ghost" id="reset-arrivals" style="margin-top:18px">Reset all arrivals</button>
     </section>
@@ -287,17 +434,17 @@
 
 <script type="module">
 /* ============================================================
-   Paste your Firebase web-app config here.
-   Until you do, the app runs in local-only mode (this browser).
+   1) Paste your Firebase web-app config here.
+      Until you do, the app runs in local-only mode (this browser).
    ============================================================ */
-const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_PROJECT.firebaseapp.com",
-  projectId: "PASTE_PROJECT",
-  storageBucket: "PASTE_PROJECT.appspot.com",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId: "PASTE_APP_ID"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBY6Nciq5mt0a9OOXesXpY1Got1Ovt9KnQ",
+    authDomain: "wedding-plans-90ff7.firebaseapp.com",
+    projectId: "wedding-plans-90ff7",
+    storageBucket: "wedding-plans-90ff7.firebasestorage.app",
+    messagingSenderId: "68737347862",
+    appId: "1:68737347862:web:ab48183ec0489550d36037"
+  };
 const FB_VERSION = '10.12.2';
 const PLAN_COLLECTION = 'plans';
 const PLAN_ID = 'wedding';
@@ -335,9 +482,9 @@ const SEED = [
 ["Tomislav","Hosni",1,""],["Ana","",1,""],["Goran","Hacek",1,""]
 ];
 
-let guests = [], tables = [], filter = 'todo', query = '', open = {}, view = 'guests';
+let guests = [], tables = [], rooms = [], filter = 'todo', query = '', editingId = null, open = {}, view = 'guests';
+let mode = 'local', fb = null, planRef = null, last = { g: {}, t: {}, r: {} };
 let afilter = 'waiting', aquery = '', pendingRender = false, focusPid = null;
-let mode = 'local', fb = null, planRef = null, last = { g: {}, t: {} };
 const $ = (id) => document.getElementById(id);
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -356,18 +503,20 @@ function seed() {
   guests = SEED.map(r => {
     const id = uid();
     const names = r[3] ? r[3].split(',') : [];
-    return { id, first: r[0], last: r[1], called: !!r[2], age: 'adult', rsvp: 'pending',
+    return { id, first: r[0], last: r[1], called: !!r[2], age: 'adult',
       companions: names.map((n, i) => { n = n.trim(); return { id: id + '-' + i, name: n, age: guessAge(n) }; }) };
   });
   tables = [];
+  rooms = [];
 }
 
 /* ---------------- storage ---------------- */
 function toMaps() {
-  const g = {}, t = {};
+  const g = {}, t = {}, r = {};
   guests.forEach((x, i) => { g[x.id] = Object.assign(clone(x), { order: i }); });
   tables.forEach((x, i) => { t[x.id] = Object.assign(clone(x), { order: i }); });
-  return { g, t };
+  rooms.forEach((x, i) => { r[x.id] = Object.assign(clone(x), { order: i }); });
+  return { g, t, r };
 }
 function diff(prefix, cur, prev, upd) {
   for (const k in cur) if (stable(cur[k]) !== stable(prev[k])) upd[prefix + '.' + k] = cur[k];
@@ -375,13 +524,14 @@ function diff(prefix, cur, prev, upd) {
 }
 function save() {
   if (mode === 'local') {
-    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ guests, tables })); } catch (e) {}
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ guests, tables, rooms })); } catch (e) {}
     return;
   }
   const cur = toMaps();
   const upd = {};
   diff('guests', cur.g, last.g, upd);
   diff('tables', cur.t, last.t, upd);
+  diff('rooms', cur.r, last.r, upd);
   last = clone(cur);
   if (Object.keys(upd).length) {
     setSync('Saving…');
@@ -401,7 +551,8 @@ function mergeList(arr, map) {
 function applyRemote(data) {
   guests = mergeList(guests, data.guests || {});
   tables = mergeList(tables, data.tables || {});
-  last = { g: clone(data.guests || {}), t: clone(data.tables || {}) };
+  rooms = mergeList(rooms, data.rooms || {});
+  last = { g: clone(data.guests || {}), t: clone(data.tables || {}), r: clone(data.rooms || {}) };
   render();
 }
 
@@ -420,7 +571,7 @@ function startLocal() {
   try {
     const raw = localStorage.getItem(LOCAL_KEY);
     const d = raw ? JSON.parse(raw) : null;
-    if (d && Array.isArray(d.guests)) { guests = d.guests; tables = d.tables || []; } else seed();
+    if (d && Array.isArray(d.guests)) { guests = d.guests; tables = d.tables || []; rooms = d.rooms || []; } else seed();
   } catch (e) { seed(); }
   setSync('Local only — add Firebase config to share');
   showApp();
@@ -453,7 +604,7 @@ async function startCloud() {
   let unsub = null;
   authMod.onAuthStateChanged(auth, user => {
     if (unsub) { unsub(); unsub = null; }
-    guests = []; tables = []; last = { g: {}, t: {} };
+    guests = []; tables = []; rooms = []; last = { g: {}, t: {}, r: {} };
     if (!user) {
       $('who-email').textContent = '';
       $('signout').hidden = true;
@@ -472,7 +623,7 @@ async function startCloud() {
             if (s.exists()) return;
             seed();
             const m = toMaps();
-            tx.set(planRef, { guests: m.g, tables: m.t });
+            tx.set(planRef, { guests: m.g, tables: m.t, rooms: m.r });
           });
         } catch (e) { gate('Could not create the plan', e.message, false); }
         return;
@@ -489,18 +640,35 @@ async function startCloud() {
 
 /* ---------------- people helpers ---------------- */
 const fullName = (g) => (g.first + ' ' + (g.last || '')).trim();
-const rsvp = (g) => g.rsvp || 'pending';
-const isOut = (g) => rsvp(g) === 'no';
+// "Ivan (Boki) Borilovic" → IB; a one-word companion borrows the party's surname: "Lucija" of Garic → LG.
+function initials(name, last) {
+  const w = name.replace(/\(.*?\)/g, ' ').trim().split(/\s+/).filter(Boolean);
+  if (!w.length) return '?';
+  if (w.length > 1) return (w[0][0] + w[w.length - 1][0]).toUpperCase();
+  return last ? (w[0][0] + last[0]).toUpperCase() : w[0][0].toUpperCase() + (w[0][1] || '');
+}
 function party(g) {
-  const out = [{ id: g.id, name: fullName(g), age: g.age || 'adult', main: true, guest: g, ref: g, inRoom: !!g.inRoom }];
-  (g.companions || []).forEach((c, i) => out.push({
-    id: c.id, name: c.name || (fullName(g) + ' +' + (i + 1)), age: c.age || 'adult',
-    main: false, guest: g, ref: c, inRoom: !!c.inRoom
-  }));
+  const out = [{ id: g.id, name: fullName(g), ini: initials(fullName(g)), age: g.age || 'adult', main: true, guest: g }];
+  (g.companions || []).forEach((c, i) => out.push({ id: c.id, name: c.name || (fullName(g) + ' +' + (i + 1)),
+    ini: c.name ? initials(c.name, g.last) : '+' + (i + 1), age: c.age || 'adult', main: false, guest: g }));
   return out;
 }
-const activeGuests = () => guests.filter(g => !isOut(g));
 const allPeople = () => guests.flatMap(party);
+// RSVP: 'pending' (no answer yet), 'yes' or 'no'. Guests who said no drop out of seating, rooms, counts and the printout.
+const rsvp = (g) => g.rsvp || 'pending';
+const isOut = (g) => rsvp(g) === 'no';
+const activeGuests = () => guests.filter(g => !isOut(g));
+// The stored object behind a person (the guest itself or one of their companions), for flags like inRoom.
+const refOf = (g, pid) => pid === g.id ? g : (g.companions || []).find(c => c.id === pid);
+function setRsvp(g, v) {
+  g.rsvp = v;
+  if (v !== 'pending') g.called = true;
+  if (v === 'no') party(g).forEach(p => { unseatPerson(p.id); unroomPerson(p.id); });
+  save(); render();
+}
+function tablesOf(g) {
+  return [...new Set(party(g).map(p => seatOf(p.id)).filter(Boolean).map(s => s.table.name))];
+}
 function personIndex() { const m = {}; allPeople().forEach(p => { m[p.id] = p; }); return m; }
 function seatOf(pid) {
   for (const t of tables) { const i = t.seats.indexOf(pid); if (i > -1) return { table: t, index: i }; }
@@ -508,40 +676,52 @@ function seatOf(pid) {
 }
 function unseatPerson(pid) { tables.forEach(t => { const i = t.seats.indexOf(pid); if (i > -1) t.seats[i] = null; }); }
 const freeCount = (t) => t.seats.filter(s => !s).length;
-function findRun(t, n) {
-  const s = t.seats, len = s.length;
-  for (let start = 0; start < len; start++) {
-    const idx = [];
-    let ok = true;
-    for (let k = 0; k < n; k++) { const j = (start + k) % len; if (s[j]) { ok = false; break; } idx.push(j); }
-    if (ok) return idx;
+function roomOf(pid) {
+  for (const r of rooms) {
+    const i = r.beds.indexOf(pid);
+    if (i > -1) return { room: r, index: i };
+    if ((r.cots || []).includes(pid)) return { room: r, cot: true };
   }
   return null;
 }
-function freeSeats(t, n) {
-  const idx = [];
-  for (let i = 0; i < t.seats.length && idx.length < n; i++) if (!t.seats[i]) idx.push(i);
-  return idx.length === n ? idx : null;
+function unroomPerson(pid) {
+  rooms.forEach(r => {
+    const i = r.beds.indexOf(pid);
+    if (i > -1) r.beds[i] = null;
+    if (r.cots && r.cots.includes(pid)) r.cots = r.cots.filter(x => x !== pid);
+  });
+}
+const freeBeds = (r) => r.beds.filter(b => !b).length;
+// Indexes in a seat/bed array for these people: clockwise from `start`, or from the first run
+// where they fit side by side. Slots the movers already hold count as free. null = no room.
+function placeIdx(slots, ids, start) {
+  const n = slots.length, m = ids.length;
+  const free = j => !slots[j] || ids.includes(slots[j]);
+  if (start == null) {
+    start = 0;
+    for (let s = 0; s < n; s++) {
+      let k = 0;
+      while (k < m && free((s + k) % n)) k++;
+      if (k === m) { start = s; break; }
+    }
+  }
+  const out = [];
+  for (let k = 0; k < n && out.length < m; k++) { const j = (start + k) % n; if (free(j)) out.push(j); }
+  return out.length === m ? out : null;
+}
+function seatIds(t, ids, idx) {
+  ids.forEach(unseatPerson);
+  idx.forEach((j, k) => { t.seats[j] = ids[k]; });
 }
 function seatParty(g, t) {
-  const people = party(g).filter(p => !seatOf(p.id));
-  if (!people.length) return true;
-  const idx = findRun(t, people.length) || freeSeats(t, people.length);
-  if (!idx) return false;
-  idx.forEach((i, k) => { t.seats[i] = people[k].id; });
-  return true;
-}
-function tablesOf(g) {
-  return [...new Set(party(g).map(p => seatOf(p.id)).filter(Boolean).map(s => s.table.name))];
-}
-function setRsvp(g, v) {
-  g.rsvp = v;
-  if (v !== 'pending') g.called = true;
-  if (v === 'no') party(g).forEach(p => unseatPerson(p.id));
-  save(); render();
+  const ids = party(g).filter(p => !seatOf(p.id)).map(p => p.id);
+  if (!ids.length) return true;
+  const idx = placeIdx(t.seats, ids, null);
+  if (idx) seatIds(t, ids, idx);
+  return !!idx;
 }
 
-/* ---------------- add form ---------------- */
+/* ---------------- form ---------------- */
 let count = 0;
 function renderCompanions(values) {
   const box = $('companions');
@@ -559,38 +739,75 @@ function renderCompanions(values) {
 }
 $('plus').addEventListener('click', () => { if (count < 12) { count++; renderCompanions(); } });
 $('minus').addEventListener('click', () => { if (count > 0) { count--; renderCompanions(); } });
+function resetForm() {
+  editingId = null; count = 0;
+  $('first').value = ''; $('last').value = '';
+  renderCompanions([]);
+  $('form-title').textContent = 'Add a guest';
+  $('submit').textContent = 'Add to the list';
+  $('cancel').hidden = true;
+}
 $('form').addEventListener('submit', e => {
   e.preventDefault();
   const first = $('first').value.trim();
   if (!first) return;
   const names = [...$('companions').querySelectorAll('input')].map(i => i.value.trim());
-  const id = uid();
-  guests.push({ id, first, last: $('last').value.trim(), called: false, age: 'adult', rsvp: 'pending',
-    companions: names.map((n, i) => ({ id: id + '-' + i, name: n, age: guessAge(n) })) });
-  count = 0; $('first').value = ''; $('last').value = ''; renderCompanions([]);
-  save(); render();
+  if (editingId) {
+    const g = guests.find(x => x.id === editingId);
+    if (g) {
+      g.first = first; g.last = $('last').value.trim();
+      const old = g.companions || [];
+      old.slice(names.length).forEach(c => { unseatPerson(c.id); unroomPerson(c.id); });
+      g.companions = names.map((n, i) => old[i]
+        ? { id: old[i].id, name: n, age: old[i].age || 'adult' }
+        : { id: g.id + '-' + uid(), name: n, age: guessAge(n) });
+    }
+  } else {
+    const id = uid();
+    guests.push({ id, first, last: $('last').value.trim(), called: false, age: 'adult',
+      companions: names.map((n, i) => ({ id: id + '-' + i, name: n, age: guessAge(n) })) });
+  }
+  save(); resetForm(); render();
 });
+$('cancel').addEventListener('click', resetForm);
+function startEdit(g) {
+  editingId = g.id;
+  $('first').value = g.first; $('last').value = g.last || '';
+  count = (g.companions || []).length;
+  renderCompanions((g.companions || []).map(c => c.name));
+  $('form-title').textContent = 'Edit guest';
+  $('submit').textContent = 'Save changes';
+  $('cancel').hidden = false;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  $('first').focus();
+}
 
 /* ---------------- tabs / filters ---------------- */
 function setView(v) {
   view = v;
-  ['guests', 'tables', 'arrivals'].forEach(n => {
-    $('view-' + n).hidden = v !== n;
-    $('tab-' + n).setAttribute('aria-pressed', String(v === n));
-  });
+  $('view-guests').hidden = v !== 'guests';
+  $('view-tables').hidden = v !== 'tables';
+  $('view-rooms').hidden = v !== 'rooms';
+  $('view-arrivals').hidden = v !== 'arrivals';
+  $('tab-guests').setAttribute('aria-pressed', String(v === 'guests'));
+  $('tab-tables').setAttribute('aria-pressed', String(v === 'tables'));
+  $('tab-rooms').setAttribute('aria-pressed', String(v === 'rooms'));
+  $('tab-arrivals').setAttribute('aria-pressed', String(v === 'arrivals'));
+  document.querySelector('.wrap').classList.toggle('tables-view', v === 'tables' || v === 'rooms');
   render();
 }
 $('tab-guests').addEventListener('click', () => setView('guests'));
 $('tab-tables').addEventListener('click', () => setView('tables'));
+$('tab-rooms').addEventListener('click', () => setView('rooms'));
 $('tab-arrivals').addEventListener('click', () => setView('arrivals'));
-document.querySelectorAll('.gchip').forEach(c => c.addEventListener('click', () => {
+document.querySelectorAll('#view-guests .chip').forEach(c => c.addEventListener('click', () => {
   filter = c.dataset.filter;
-  document.querySelectorAll('.gchip').forEach(o => o.setAttribute('aria-pressed', String(o === c)));
+  document.querySelectorAll('#view-guests .chip').forEach(o => o.setAttribute('aria-pressed', String(o === c)));
   render();
 }));
-document.querySelectorAll('.achip').forEach(c => c.addEventListener('click', () => {
+document.querySelectorAll('#view-arrivals .chip').forEach(c => c.addEventListener('click', () => {
   afilter = c.dataset.af;
-  document.querySelectorAll('.achip').forEach(o => o.setAttribute('aria-pressed', String(o === c)));
+  document.querySelectorAll('#view-arrivals .chip').forEach(o => o.setAttribute('aria-pressed', String(o === c)));
   render();
 }));
 $('search').addEventListener('input', function () { query = this.value.toLowerCase().trim(); render(); });
@@ -625,6 +842,18 @@ function option(parent, label, sub, fn) {
 }
 
 /* ---------------- tables ---------------- */
+function make(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  if (tag === 'button') e.type = 'button';
+  return e;
+}
+function partyHues() {
+  const h = {};
+  guests.forEach((g, i) => { h[g.id] = Math.round(i * 137.508) % 360; });
+  return h;
+}
 function addTable(size) {
   tables.push({ id: uid(), name: 'Table ' + (tables.length + 1), size, seats: new Array(size).fill(null) });
   save(); render();
@@ -642,7 +871,13 @@ $('autoseat').addEventListener('click', () => {
   save(); render();
   if (left) alert(left + ' parties did not fit. Add more tables and press again.');
 });
+const benchCollapsed = { tables: false, rooms: false };
+$('bench-toggle').addEventListener('click', () => { benchCollapsed.tables = !benchCollapsed.tables; render(); });
 
+function renameTable(t) {
+  const v = prompt('Table name', t.name);
+  if (v !== null && v.trim()) { t.name = v.trim(); save(); render(); }
+}
 function pickPersonForSeat(t, i) {
   sheet('Seat ' + (i + 1) + ' · ' + t.name, (box, close) => {
     let any = false;
@@ -664,8 +899,7 @@ function seatMenu(t, i, p) {
     tables.forEach(ot => {
       if (ot.id === t.id || !freeCount(ot)) return;
       option(box, 'Move to ' + ot.name, freeCount(ot) + ' seats free', () => {
-        const free = freeSeats(ot, 1);
-        t.seats[i] = null; ot.seats[free[0]] = p.id; save(); close(); render();
+        seatIds(ot, [p.id], placeIdx(ot.seats, [p.id], null)); save(); close(); render();
       });
     });
   });
@@ -680,6 +914,21 @@ function seatPartyMenu(g) {
       option(box, t.name, freeCount(t) + ' of ' + t.size + ' seats free', () => { seatParty(g, t); save(); close(); render(); });
     });
     if (!any) { const e = document.createElement('p'); e.textContent = n ? 'No table has ' + n + ' free seats. Add another table.' : 'Already seated.'; box.appendChild(e); }
+  });
+}
+function groupMenu(label, t, ids) {
+  sheet(label + ' · ' + t.name, (box, close) => {
+    option(box, ids.length > 1 ? 'Take all ' + ids.length + ' off this table' : 'Take off this table', 'Back to Still standing', () => {
+      ids.forEach(unseatPerson); save(); close(); render();
+    });
+    tables.forEach(ot => {
+      if (ot.id === t.id) return;
+      const idx = placeIdx(ot.seats, ids, null);
+      if (!idx) return;
+      option(box, 'Move to ' + ot.name, freeCount(ot) + ' of ' + ot.size + ' seats free', () => {
+        seatIds(ot, ids, idx); save(); close(); render();
+      });
+    });
   });
 }
 
@@ -932,86 +1181,129 @@ function toast(msg) {
 
 /* ---------------- tables render ---------------- */
 function renderTables() {
-  const idx = personIndex();
+  const idx = personIndex(), hue = partyHues();
   const wrapEl = $('tables');
   wrapEl.innerHTML = '';
-  if (!tables.length) {
-    const e = document.createElement('div');
-    e.className = 'empty';
-    e.textContent = 'No tables yet. Add one above, then seat people.';
-    wrapEl.appendChild(e);
-  }
-  tables.forEach(t => {
-    const box = document.createElement('div');
-    box.className = 'table';
-    const head = document.createElement('div');
-    head.className = 'thead';
-    const nm = document.createElement('div');
-    nm.className = 'tname';
-    nm.textContent = t.name;
-    nm.title = 'Tap to rename';
-    nm.addEventListener('click', () => {
-      const v = prompt('Table name', t.name);
-      if (v !== null && v.trim()) { t.name = v.trim(); save(); render(); }
-    });
-    const meta = document.createElement('span');
-    meta.className = 'tmeta';
-    meta.textContent = (t.size - freeCount(t)) + '/' + t.size;
-    const x = document.createElement('button');
-    x.className = 'x'; x.type = 'button'; x.textContent = 'Delete';
-    x.addEventListener('click', () => {
-      if (!confirm('Delete ' + t.name + '? Everyone at it goes back to the unseated list.')) return;
-      tables = tables.filter(o => o.id !== t.id); save(); render();
-    });
-    head.append(nm, meta, x);
-    box.appendChild(head);
+  if (!tables.length) wrapEl.appendChild(make('div', 'empty', 'No tables yet. Add one above, then drag guests onto the seats.'));
 
-    const grid = document.createElement('div');
-    grid.className = 'seats';
+  tables.forEach(t => {
+    const n = t.seats.length;
+    const card = make('div', 'rtable');
+    card.dataset.c = t.id;
+    const rt = make('div', 'rt');
+    const top = make('button', 'rt-top');
+    top.title = 'Rename table';
+    top.append(make('span', 'tn', t.name), make('span', 'tc', (n - freeCount(t)) + ' / ' + n));
+    top.addEventListener('click', () => renameTable(t));
+    rt.appendChild(top);
+
+    const groups = [], byGuest = {};
     t.seats.forEach((pid, i) => {
       let p = pid ? idx[pid] : null;
       if (pid && !p) { t.seats[i] = null; p = null; }
-      const b = document.createElement('button');
-      b.className = 'seat' + (p ? '' : ' free');
-      b.type = 'button';
-      const no = document.createElement('span'); no.className = 'no'; no.textContent = i + 1;
-      const pn = document.createElement('span'); pn.className = 'pname'; pn.textContent = p ? p.name : 'empty';
-      b.append(no, pn);
-      if (p && p.age !== 'adult') {
-        const tg = document.createElement('span'); tg.className = 'tag';
-        tg.textContent = p.age === 'infant' ? 'infant' : 'kid';
-        b.appendChild(tg);
+      const a = i / n * 2 * Math.PI;
+      const s = make('button', 'seat' + (p ? ' on' + (p.age !== 'adult' ? ' kid' : '') : ''), p ? p.ini : String(i + 1));
+      s.dataset.i = i;
+      s.style.left = (50 + 41 * Math.sin(a)).toFixed(2) + '%';
+      s.style.top = (50 - 41 * Math.cos(a)).toFixed(2) + '%';
+      const label = 'Seat ' + (i + 1) + ' · ' + (p ? p.name + (p.age !== 'adult' ? ' (' + p.age + ')' : '') : 'empty');
+      s.title = label;
+      s.setAttribute('aria-label', label);
+      if (p) {
+        s.style.setProperty('--h', hue[p.guest.id]);
+        draggable(s, () => ({ ids: [p.id], title: p.name, hue: hue[p.guest.id], seated: true, from: { c: t.id, i },
+          lift: [s], note: p.main ? '' : 'with ' + fullName(p.guest) }));
+        if (!byGuest[p.guest.id]) groups.push(byGuest[p.guest.id] = { g: p.guest, people: [], seats: [] });
+        byGuest[p.guest.id].people.push(p);
+        byGuest[p.guest.id].seats.push(s);
       }
-      b.addEventListener('click', () => p ? seatMenu(t, i, p) : pickPersonForSeat(t, i));
-      grid.appendChild(b);
+      s.addEventListener('click', () => p ? seatMenu(t, i, p) : pickPersonForSeat(t, i));
+      rt.appendChild(s);
     });
-    box.appendChild(grid);
-    wrapEl.appendChild(box);
+    card.appendChild(rt);
+
+    // One chip per party at this table: drag it to move that whole group, tap for options.
+    if (groups.length) {
+      const chips = make('div', 'rt-parties');
+      groups.forEach(gr => {
+        const ids = gr.people.map(p => p.id);
+        const label = gr.people.some(p => p.main)
+          ? fullName(gr.g) + (ids.length > 1 ? ' +' + (ids.length - 1) : '')
+          : gr.people.map(p => p.name).join(', ');
+        const c = make('button', 'pchip');
+        c.style.setProperty('--h', hue[gr.g.id]);
+        c.title = gr.people.map(p => p.name).join(', ');
+        c.append(make('span', 'dot'), make('span', null, label));
+        draggable(c, () => ({ ids, title: label, hue: hue[gr.g.id], seated: true, lift: [c].concat(gr.seats), note: 'from ' + t.name }));
+        c.addEventListener('click', () => groupMenu(label, t, ids));
+        chips.appendChild(c);
+      });
+      card.appendChild(chips);
+    }
+
+    const foot = make('div', 'rt-foot');
+    const x = make('button', 'x', 'Delete table');
+    x.addEventListener('click', () => {
+      if (!confirm('Delete ' + t.name + '? Everyone at it goes back to Still standing.')) return;
+      tables = tables.filter(o => o.id !== t.id); save(); render();
+    });
+    foot.appendChild(x);
+    card.appendChild(foot);
+    wrapEl.appendChild(card);
   });
 
-  const ul = $('unseated');
-  ul.innerHTML = '';
-  let none = true;
+  renderBench('tables');
+}
+
+/* ---------------- bench: people not yet placed (tables or rooms) ---------------- */
+function kidsLabel(people) {
+  const kids = people.filter(p => p.age === 'kid').length, inf = people.filter(p => p.age === 'infant').length;
+  return [kids ? plural(kids, 'kid', 'kids') : '', inf ? plural(inf, 'infant', 'infants') : ''].filter(Boolean).join(' · ');
+}
+function renderBench(kind) {
+  const k = KIND[kind], hue = partyHues(), rooming = kind === 'rooms';
+  const placed = rooming ? roomOf : seatOf, key = rooming ? 'r' : 'b', q = rooming ? rquery : '';
+  const list = $(k.bench + '-list');
+  list.innerHTML = '';
+  let ppl = 0, parties = 0;
   activeGuests().forEach(g => {
-    const left = party(g).filter(p => !seatOf(p.id));
+    const all = party(g), left = all.filter(p => !placed(p.id));
     if (!left.length) return;
-    none = false;
-    const li = document.createElement('li');
-    li.className = 'guest';
-    const row = document.createElement('div');
-    row.className = 'row';
-    const who = document.createElement('span');
-    who.className = 'who';
-    who.innerHTML = '<span class="name"></span><span class="sub"></span>';
-    who.querySelector('.name').textContent = fullName(g);
-    who.querySelector('.sub').textContent = left.length + (left.length === 1 ? ' person' : ' people') + ' to seat' +
-      (rsvp(g) === 'pending' ? ' · no answer yet' : '');
-    const b = document.createElement('button');
-    b.className = 'btn'; b.type = 'button'; b.textContent = 'Seat';
-    b.addEventListener('click', () => seatPartyMenu(g));
-    row.append(who, b);
-    li.appendChild(row);
-    ul.appendChild(li);
+    if (q && !(fullName(g) + ' ' + all.map(p => p.name).join(' ')).toLowerCase().includes(q)) return;
+    ppl += left.length; parties++;
+    const isOpen = !!open[key + g.id];
+    const label = left.some(p => p.main) ? fullName(g) : left.map(p => p.name).join(', ');
+    const card = make('div', 'pcard' + (isOpen ? ' open' : ''));
+    card.style.setProperty('--h', hue[g.id]);
+    const head = make('button', 'phead');
+    head.setAttribute('aria-expanded', String(isOpen));
+    head.title = left.map(p => p.name).join(', ');
+    head.append(make('span', 'dot'), make('span', 'pnm', label));
+    const kl = kidsLabel(left);
+    if (kl) head.appendChild(make('span', 'ktag', kl));
+    if (left.length > 1) head.appendChild(make('span', 'pct', String(left.length)));
+    head.addEventListener('click', () => { open[key + g.id] = !isOpen; render(); });
+    draggable(head, () => ({ kind, ids: left.map(p => p.id), title: label, hue: hue[g.id], seated: false, lift: [card],
+      note: left.length < all.length ? (all.length - left.length) + (rooming ? ' already in a room' : ' already seated')
+        : (left.some(p => p.main) ? '' : 'with ' + fullName(g)) }));
+    card.appendChild(head);
+    if (isOpen) {
+      const mem = make('div', 'pmembers');
+      if (left.length > 1) {
+        mem.appendChild(make('span', 'phint', rooming ? 'Drag a name to move just that person:' : 'Drag a name to seat just that person:'));
+        left.forEach(p => {
+          const c = make('button', 'mchip' + (p.age !== 'adult' ? ' kid' : ''), p.name + (p.age !== 'adult' ? ' · ' + p.age : ''));
+          draggable(c, () => ({ kind, ids: [p.id], title: p.name, hue: hue[g.id], seated: false, lift: [c],
+            note: p.main ? '' : 'with ' + fullName(g) }));
+          mem.appendChild(c);
+        });
+      }
+      const st = make('button', 'ghost', rooming ? 'Put in a room…' : 'Seat at a table…');
+      st.addEventListener('click', () => rooming ? roomPartyMenu(g) : seatPartyMenu(g));
+      mem.appendChild(st);
+      card.appendChild(mem);
+    }
+    list.appendChild(card);
   });
   if (!parties) list.appendChild(make('div', 'empty', q ? 'Nobody here matches.'
     : rooming ? (rooms.length ? 'Everyone has a room.' : 'Add a room, then drag guests in.')
@@ -1097,7 +1389,7 @@ function roomMenu(r) {
 function pickPersonForBed(r, i) {
   sheet('Bed ' + (i + 1) + ' · ' + r.name, (box, close) => {
     let any = false;
-    guests.forEach(g => party(g).forEach(p => {
+    activeGuests().forEach(g => party(g).forEach(p => {
       if (roomOf(p.id)) return;
       any = true;
       option(box, p.name, [p.main ? '' : 'with ' + fullName(g), p.age === 'infant' ? 'infant · goes in the baby cot' : p.age === 'kid' ? 'kid' : '']
@@ -1215,71 +1507,62 @@ function renderRooms() {
 }
 
 /* ---------------- guests ---------------- */
-function agePills(parent, p, onChange) {
+function seatPills(parent, pid) {
+  const s = seatOf(pid);
+  if (s) parent.appendChild(make('span', 'seatpill', s.table.name + ' · ' + (s.index + 1)));
+  const rm = roomOf(pid);
+  if (rm) parent.appendChild(make('span', 'seatpill', rm.room.name + (rm.cot ? ' · cot' : '')));
+}
+function agePills(parent, age, onChange) {
   [['infant', 'infant 1–3'], ['kid', 'kid 3–12']].forEach(a => {
-    const b = document.createElement('button');
-    b.className = 'age'; b.type = 'button'; b.textContent = a[1];
-    b.setAttribute('aria-pressed', String(p.age === a[0]));
-    b.addEventListener('click', () => onChange(p.age === a[0] ? 'adult' : a[0]));
+    const b = make('button', 'age', a[1]);
+    b.setAttribute('aria-pressed', String(age === a[0]));
+    b.addEventListener('click', () => onChange(age === a[0] ? 'adult' : a[0]));
     parent.appendChild(b);
   });
 }
-function textInput(value, placeholder, pid, onCommit) {
-  const i = document.createElement('input');
+// A name box that saves when you leave it (or press Enter). Re-renders wait until you stop typing.
+function nameInput(value, placeholder, pid, onCommit) {
+  const i = make('input');
   i.type = 'text'; i.value = value || ''; i.placeholder = placeholder;
   if (pid) i.dataset.pid = pid;
   i.addEventListener('change', () => { onCommit(i.value.trim()); save(); pendingRender = true; });
   i.addEventListener('keydown', e => { if (e.key === 'Enter') i.blur(); });
   return i;
 }
-function seatPillFor(pid) {
-  const s = seatOf(pid);
-  if (!s) return null;
-  const sp = document.createElement('span');
-  sp.className = 'seatpill';
-  sp.textContent = s.table.name + ' · ' + (s.index + 1);
-  return sp;
-}
 
 function renderDetail(g) {
-  const d = document.createElement('div');
-  d.className = 'detail';
+  const d = make('div', 'detail');
 
-  const seg = document.createElement('div');
-  seg.className = 'seg';
+  const seg = make('div', 'seg');
+  seg.setAttribute('role', 'group');
+  seg.setAttribute('aria-label', 'Answer');
   [['pending', 'No answer'], ['yes', 'Coming'], ['no', 'Not coming']].forEach(([v, label]) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = v; b.textContent = label;
+    const b = make('button', v, label);
     b.setAttribute('aria-pressed', String(rsvp(g) === v));
     b.addEventListener('click', () => setRsvp(g, v));
     seg.appendChild(b);
   });
   d.appendChild(seg);
 
-  // main guest
-  const m = document.createElement('div');
-  m.className = 'person';
-  const lead = document.createElement('span');
-  lead.className = 'lead'; lead.textContent = 'Main guest';
-  m.appendChild(lead);
-  m.appendChild(textInput(g.first, 'First name', g.id, v => { if (v) g.first = v; }));
-  m.appendChild(textInput(g.last, 'Last name', null, v => { g.last = v; }));
-  const sp0 = seatPillFor(g.id); if (sp0) m.appendChild(sp0);
-  agePills(m, party(g)[0], v => { g.age = v; save(); render(); });
+  const m = make('div', 'person');
+  m.appendChild(make('span', 'lead', 'Main guest'));
+  m.appendChild(nameInput(g.first, 'First name', g.id, v => { if (v) g.first = v; }));
+  m.appendChild(nameInput(g.last, 'Last name', null, v => { g.last = v; }));
+  seatPills(m, g.id);
+  agePills(m, g.age || 'adult', v => { g.age = v; save(); render(); });
   d.appendChild(m);
 
-  // companions
   (g.companions || []).forEach((c, i) => {
-    const r = document.createElement('div');
-    r.className = 'person';
-    r.appendChild(textInput(c.name, 'Guest ' + (i + 1) + ' name', c.id, v => { c.name = v; }));
-    const sp = seatPillFor(c.id); if (sp) r.appendChild(sp);
-    agePills(r, { age: c.age || 'adult' }, v => { c.age = v; save(); render(); });
-    const rm = document.createElement('button');
-    rm.className = 'rm'; rm.type = 'button'; rm.textContent = '×';
-    rm.setAttribute('aria-label', 'Remove ' + (c.name || 'this guest') + ' from the party');
+    const r = make('div', 'person');
+    r.appendChild(nameInput(c.name, 'Guest ' + (i + 1) + ' name', c.id, v => { c.name = v; }));
+    seatPills(r, c.id);
+    agePills(r, c.age || 'adult', v => { c.age = v; save(); render(); });
+    const rm = make('button', 'rm', '×');
+    rm.title = 'Remove from the party';
+    rm.setAttribute('aria-label', 'Remove ' + (c.name || 'guest ' + (i + 1)) + ' from the party');
     rm.addEventListener('click', () => {
-      unseatPerson(c.id);
+      unseatPerson(c.id); unroomPerson(c.id);
       g.companions = g.companions.filter(x => x.id !== c.id);
       save(); render();
     });
@@ -1287,30 +1570,31 @@ function renderDetail(g) {
     d.appendChild(r);
   });
 
-  const acts = document.createElement('div');
-  acts.className = 'acts';
-  const add = document.createElement('button');
-  add.type = 'button'; add.textContent = '+ Add person';
+  const acts = make('div', 'acts');
+  const add = make('button', 'edit', '+ Add person');
   add.addEventListener('click', () => {
     const c = { id: g.id + '-' + uid(), name: '', age: 'adult' };
     g.companions = (g.companions || []).concat(c);
     focusPid = c.id;
     save(); render();
   });
-  const st = document.createElement('button');
-  st.type = 'button'; st.textContent = 'Seat party';
-  st.addEventListener('click', () => seatPartyMenu(g));
-  const del = document.createElement('button');
-  del.className = 'del'; del.type = 'button'; del.textContent = 'Remove party';
+  acts.appendChild(add);
+  if (!isOut(g)) {
+    const st = make('button', 'edit', 'Seat party');
+    st.addEventListener('click', () => seatPartyMenu(g));
+    const rp = make('button', 'edit', 'Room for party');
+    rp.addEventListener('click', () => roomPartyMenu(g));
+    acts.append(st, rp);
+  }
+  const del = make('button', 'del', 'Remove party');
   del.addEventListener('click', () => {
     if (!confirm('Remove ' + fullName(g) + ' and their whole party?')) return;
-    party(g).forEach(p => unseatPerson(p.id));
+    party(g).forEach(p => { unseatPerson(p.id); unroomPerson(p.id); });
     guests = guests.filter(x => x.id !== g.id);
+    if (editingId === g.id) resetForm();
     save(); render();
   });
-  if (!isOut(g)) acts.append(add, st);
-  else acts.append(add);
-  acts.append(del);
+  acts.appendChild(del);
   d.appendChild(acts);
   return d;
 }
@@ -1320,9 +1604,7 @@ function renderGuests() {
     const r = rsvp(g);
     if (filter === 'todo' && g.called) return false;
     if (filter === 'done' && !g.called) return false;
-    if (filter === 'pending' && r !== 'pending') return false;
-    if (filter === 'yes' && r !== 'yes') return false;
-    if (filter === 'no' && r !== 'no') return false;
+    if ((filter === 'pending' || filter === 'yes' || filter === 'no') && r !== filter) return false;
     if (filter === 'unseated' && (isOut(g) || !party(g).some(p => !seatOf(p.id)))) return false;
     if (query) {
       const hay = (fullName(g) + ' ' + (g.companions || []).map(c => c.name).join(' ')).toLowerCase();
@@ -1334,51 +1616,28 @@ function renderGuests() {
   const list = $('list');
   list.innerHTML = '';
   shown.forEach(g => {
-    const li = document.createElement('li');
-    li.className = 'guest' + (g.called ? ' done' : '') + (isOut(g) ? ' declined' : '');
-    const row = document.createElement('div');
-    row.className = 'row';
+    const li = make('li', 'guest' + (g.called ? ' done' : '') + (isOut(g) ? ' declined' : ''));
+    const row = make('div', 'row');
 
-    const tick = document.createElement('button');
-    tick.className = 'tick'; tick.type = 'button'; tick.textContent = '✓';
+    const tick = make('button', 'tick', '✓');
     tick.setAttribute('aria-label', (g.called ? 'Mark as not called: ' : 'Mark as called: ') + fullName(g));
     tick.addEventListener('click', () => { g.called = !g.called; save(); render(); });
 
-    const who = document.createElement('button');
-    who.className = 'who'; who.type = 'button';
+    const who = make('button', 'who');
     who.setAttribute('aria-expanded', String(!!open[g.id]));
-    who.innerHTML = '<span class="name"></span>';
-    who.querySelector('.name').textContent = fullName(g);
+    who.appendChild(make('span', 'name', fullName(g)));
     const listed = (g.companions || []).map(c => c.name).filter(Boolean);
-    if (listed.length) {
-      const sub = document.createElement('span');
-      sub.className = 'sub';
-      sub.textContent = 'with ' + listed.join(', ');
-      who.appendChild(sub);
-    }
+    if (listed.length) who.appendChild(make('span', 'sub', 'with ' + listed.join(', ')));
     who.addEventListener('click', () => { open[g.id] = !open[g.id]; render(); });
 
     row.append(tick, who);
     const r = rsvp(g);
-    if (r !== 'pending') {
-      const st = document.createElement('span');
-      st.className = 'st ' + r;
-      st.textContent = r === 'yes' ? 'coming' : 'not coming';
-      row.appendChild(st);
-    }
-    const tn = tablesOf(g);
-    if (tn.length) {
-      const sp = document.createElement('span');
-      sp.className = 'seatpill';
-      sp.textContent = tn.join(', ');
-      row.appendChild(sp);
-    }
-    if ((g.companions || []).length) {
-      const badge = document.createElement('span');
-      badge.className = 'badge';
-      badge.textContent = '+' + g.companions.length;
-      row.appendChild(badge);
-    }
+    if (r !== 'pending') row.appendChild(make('span', 'rsvp ' + r, r === 'yes' ? 'coming' : 'not coming'));
+    const seat0 = seatOf(g.id);
+    if (seat0) row.appendChild(make('span', 'seatpill', seat0.table.name));
+    const room0 = roomOf(g.id);
+    if (room0) row.appendChild(make('span', 'seatpill', room0.room.name));
+    if ((g.companions || []).length) row.appendChild(make('span', 'badge', '+' + g.companions.length));
     li.appendChild(row);
     if (open[g.id]) li.appendChild(renderDetail(g));
     list.appendChild(li);
@@ -1389,8 +1648,9 @@ function renderGuests() {
   else {
     empty.hidden = false;
     const msgs = { todo: 'Everyone has been called.', done: 'No calls made yet.', pending: 'Everyone has answered.',
-      yes: 'Nobody marked as coming yet.', no: 'Nobody declined.', unseated: 'Everyone has a seat.', all: 'Nobody on the list.' };
-    empty.textContent = query ? 'No names match "' + $('search').value.trim() + '".' : msgs[filter];
+      yes: 'Nobody marked as coming yet.', no: 'Nobody has said no.', unseated: 'Everyone has a seat.', all: 'Nobody on the list.' };
+    empty.textContent = !guests.length ? 'Nobody on the list.'
+      : query ? 'No names match "' + $('search').value.trim() + '".' : msgs[filter];
   }
 
   if (focusPid) {
@@ -1400,23 +1660,21 @@ function renderGuests() {
   }
 }
 
-/* ---------------- arrivals ---------------- */
+/* ---------------- arrivals (wedding day) ---------------- */
 function renderArrivals() {
   const yes = guests.filter(g => rsvp(g) === 'yes');
   const people = yes.flatMap(party);
-  const inRoom = people.filter(p => p.inRoom).length;
-  $('a-in').textContent = inRoom;
+  const here = (g, p) => !!(refOf(g, p.id) || {}).inRoom;
+  const inCount = yes.reduce((n, g) => n + party(g).filter(p => here(g, p)).length, 0);
+  $('a-in').textContent = inCount;
   $('a-total').textContent = people.length;
-  $('a-bar').style.width = people.length ? (inRoom / people.length * 100) + '%' : '0';
+  $('a-bar').style.width = people.length ? (inCount / people.length * 100) + '%' : '0';
 
   const shown = yes.filter(g => {
     const ps = party(g);
-    if (afilter === 'waiting' && ps.every(p => p.inRoom)) return false;
-    if (afilter === 'here' && !ps.some(p => p.inRoom)) return false;
-    if (aquery) {
-      const hay = ps.map(p => p.name).join(' ').toLowerCase();
-      if (!hay.includes(aquery)) return false;
-    }
+    if (afilter === 'waiting' && ps.every(p => here(g, p))) return false;
+    if (afilter === 'here' && !ps.some(p => here(g, p))) return false;
+    if (aquery && !ps.map(p => p.name).join(' ').toLowerCase().includes(aquery)) return false;
     return true;
   });
 
@@ -1424,36 +1682,24 @@ function renderArrivals() {
   ul.innerHTML = '';
   shown.forEach(g => {
     const ps = party(g);
-    const allIn = ps.every(p => p.inRoom);
-    const li = document.createElement('li');
-    li.className = 'guest acard' + (allIn ? ' all-in' : '');
-
-    const top = document.createElement('div');
-    top.className = 'top';
-    const nm = document.createElement('span');
-    nm.className = 'nm'; nm.textContent = fullName(g);
-    const tb = document.createElement('span');
-    tb.className = 'tb';
+    const allIn = ps.every(p => here(g, p));
+    const li = make('li', 'guest acard' + (allIn ? ' all-in' : ''));
+    const top = make('div', 'top');
     const tn = tablesOf(g);
-    tb.textContent = tn.length ? tn.join(', ') : 'no table';
-    top.append(nm, tb);
+    top.append(make('span', 'nm', fullName(g)), make('span', 'tb', tn.length ? tn.join(', ') : 'no table'));
     li.appendChild(top);
 
-    const row = document.createElement('div');
-    row.className = 'ppl';
+    const row = make('div', 'ppl');
     ps.forEach(p => {
-      const b = document.createElement('button');
-      b.className = 'pchip'; b.type = 'button';
-      b.textContent = (p.inRoom ? '✓ ' : '') + p.name + (p.age === 'infant' ? ' · infant' : p.age === 'kid' ? ' · kid' : '');
-      b.setAttribute('aria-pressed', String(p.inRoom));
-      b.addEventListener('click', () => { p.ref.inRoom = !p.inRoom; save(); render(); });
+      const on = here(g, p);
+      const b = make('button', 'achip', (on ? '✓ ' : '') + p.name + (p.age === 'infant' ? ' · infant' : p.age === 'kid' ? ' · kid' : ''));
+      b.setAttribute('aria-pressed', String(on));
+      b.addEventListener('click', () => { const ref = refOf(g, p.id); if (ref) ref.inRoom = !on; save(); render(); });
       row.appendChild(b);
     });
     if (ps.length > 1) {
-      const all = document.createElement('button');
-      all.className = 'btn' + (allIn ? '' : ' go'); all.type = 'button';
-      all.textContent = allIn ? 'Undo' : 'Everyone here';
-      all.addEventListener('click', () => { ps.forEach(p => { p.ref.inRoom = !allIn; }); save(); render(); });
+      const all = make('button', 'btn' + (allIn ? '' : ' go'), allIn ? 'Undo' : 'Everyone here');
+      all.addEventListener('click', () => { ps.forEach(p => { const ref = refOf(g, p.id); if (ref) ref.inRoom = !allIn; }); save(); render(); });
       row.appendChild(all);
     }
     li.appendChild(row);
@@ -1461,22 +1707,18 @@ function renderArrivals() {
   });
 
   if (!shown.length) {
-    const li = document.createElement('li');
-    li.className = 'empty';
-    if (!yes.length) li.textContent = 'No one is marked as coming yet. Set "Coming" on guests in the Guests tab.';
-    else if (aquery) li.textContent = 'No one matches "' + $('a-search').value.trim() + '".';
-    else if (afilter === 'waiting') li.textContent = 'Everyone is in the room.';
-    else li.textContent = 'Nobody has arrived yet.';
-    ul.appendChild(li);
+    ul.appendChild(make('li', 'empty', !yes.length ? 'No one is marked as coming yet. Set "Coming" on guests in the Guests tab.'
+      : aquery ? 'No one matches "' + $('a-search').value.trim() + '".'
+      : afilter === 'waiting' ? 'Everyone is in the room.' : 'Nobody has arrived yet.'));
   }
 }
 $('reset-arrivals').addEventListener('click', () => {
   if (!confirm('Clear every arrival check?')) return;
-  guests.forEach(g => party(g).forEach(p => { delete p.ref.inRoom; }));
+  guests.forEach(g => { delete g.inRoom; (g.companions || []).forEach(c => { delete c.inRoom; }); });
   save(); render();
 });
 
-/* ---------------- render ---------------- */
+// Don't rebuild the guest list while a name box in it is being edited; catch up once you leave it.
 function editingInline() {
   const a = document.activeElement;
   return !!(a && a.tagName === 'INPUT' && a.closest('#list'));
@@ -1484,22 +1726,23 @@ function editingInline() {
 document.addEventListener('focusout', () => setTimeout(() => { if (pendingRender && !editingInline()) render(); }, 0));
 
 function render() {
-  const act = activeGuests().flatMap(party);
-  const yesPeople = guests.filter(g => rsvp(g) === 'yes').flatMap(party);
+  if (drag) return; // endDrag() re-renders, so a remote update mid-drag doesn't pull the DOM out from under it
+  const people = activeGuests().flatMap(party);
   const called = guests.filter(g => g.called).length;
   $('s-called').textContent = called;
   $('s-parties').textContent = guests.length;
-  $('s-yes').textContent = yesPeople.length;
-  $('s-heads').textContent = act.length;
-  $('s-kids').textContent = act.filter(p => p.age === 'kid').length;
-  $('s-inf').textContent = act.filter(p => p.age === 'infant').length;
-  $('s-seated').textContent = act.filter(p => seatOf(p.id)).length;
+  $('s-yes').textContent = guests.filter(g => rsvp(g) === 'yes').flatMap(party).length;
+  $('s-heads').textContent = people.length;
+  $('s-kids').textContent = people.filter(p => p.age === 'kid').length;
+  $('s-inf').textContent = people.filter(p => p.age === 'infant').length;
+  $('s-seated').textContent = people.filter(p => seatOf(p.id)).length;
+  $('s-roomed').textContent = people.filter(p => roomOf(p.id)).length;
   $('bar').style.width = guests.length ? (called / guests.length * 100) + '%' : '0';
-
   if (view === 'guests' && editingInline()) { pendingRender = true; return; }
   pendingRender = false;
   if (view === 'guests') renderGuests();
   else if (view === 'tables') renderTables();
+  else if (view === 'rooms') renderRooms();
   else renderArrivals();
 }
 
@@ -1533,18 +1776,18 @@ $('btn-print').addEventListener('click', () => {
       h += '</div>';
     });
   }
-  const rows = allPeople().map(p => {
+  const rows = activeGuests().flatMap(party).map(p => {
     const s = seatOf(p.id), rm = roomOf(p.id);
     return { name: p.name, party: p.main ? '' : fullName(p.guest),
-      table: s ? s.table.name : '', seat: s ? s.index + 1 : '',
+      table: s ? s.table.name : '', seat: s ? s.index + 1 : '', room: rm ? rm.room.name + (rm.cot ? ' (cot)' : '') : '',
       age: p.age === 'adult' ? '' : (p.age === 'infant' ? 'infant' : 'kid'),
-      rsvp: rsvp(p.guest) === 'yes' ? 'coming' : '?' };
+      rsvp: rsvp(p.guest) === 'yes' ? 'coming' : '' };
   }).sort((a, b) => a.name.localeCompare(b.name, 'hr'));
   h += '<div class="brk"></div><h2>Guest checklist · ' + rows.length + ' people</h2>';
-  h += '<table class="chk"><thead><tr><th></th><th>Name</th><th>With</th><th>Table</th><th>Seat</th><th>Age</th><th>RSVP</th></tr></thead><tbody>';
+  h += '<table class="chk"><thead><tr><th></th><th>Name</th><th>With</th><th>Table</th><th>Seat</th><th>Room</th><th>Age</th><th>RSVP</th></tr></thead><tbody>';
   rows.forEach(r => {
     h += '<tr><td><span class="box"></span></td><td>' + esc(r.name) + '</td><td>' + esc(r.party) +
-      '</td><td>' + esc(r.table) + '</td><td>' + esc(r.seat) + '</td><td>' + esc(r.age) + '</td><td>' + esc(r.rsvp) + '</td></tr>';
+      '</td><td>' + esc(r.table) + '</td><td>' + esc(r.seat) + '</td><td>' + esc(r.room) + '</td><td>' + esc(r.age) + '</td><td>' + esc(r.rsvp) + '</td></tr>';
   });
   h += '</tbody></table>';
   $('print').innerHTML = h;
